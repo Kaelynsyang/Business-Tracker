@@ -23,6 +23,7 @@ function SalesPage() {
     const [deal, setDeal] = useState("");
     const [products, setProducts] = useState([]);
     const [discount, setDiscount] = useState(0);
+    const API_URL = import.meta.env.VITE_API_URL;
 
     /*
     const products = {
