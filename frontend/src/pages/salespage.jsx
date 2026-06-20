@@ -24,32 +24,6 @@ function SalesPage() {
     const [products, setProducts] = useState([]);
     const [discount, setDiscount] = useState(0);
     const API_URL = import.meta.env.VITE_API_URL;
-
-    /*
-    const products = {
-        Stickers: {
-            fields:{
-                size: ["2x3", "3x3"],
-                design: ["a", "b", "c", "d"]
-            }},
-        Keychains: {
-            fields:{
-                size: ["2x3", "3x3"],
-                design: ["cat", "dog", "pig", "frog"]
-            }},
-        Prints: {
-            fields:{
-                size: ["Small", "Medium", "Large"],
-                design: ["1", "2", "3", "4"]}},
-        Buttons: {
-            fields:
-            {
-                size: ["Small", "Medium", "Large"],
-                design: ["asd", "adfs", "hgfgd", "adsfb"]}
-        }
-
-};
-*/
     
     useEffect(() => {
         fetch(`${API_URL}/orders`)
@@ -112,7 +86,7 @@ function SalesPage() {
 
     const deleteOrder = async (id) => {
         await fetch(
-            `${API_URL}/orders${id}`,
+            `${API_URL}/orders/${id}`,
             {
                 method: "DELETE"
             });
