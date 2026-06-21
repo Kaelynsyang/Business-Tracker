@@ -1,0 +1,158 @@
+:root{
+  background-color: rgb(198, 233, 198);
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+  color: black;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+p {
+  color: black;
+  padding: 0px;
+}
+
+h1 {
+  text-align: center;
+  font-size: 4rem;
+  padding: 20px;
+  padding-top: 70px;
+}
+
+h2 {
+  text-align: center;
+  font-size: 2rem;
+  padding: 20px;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color:cadetblue;
+  position: fixed;
+  width: 100%;
+}
+
+nav ul {
+  list-style-type: none;
+  overflow: hidden;
+}
+
+nav li {
+  float: left;
+}
+
+nav li a {
+  display: block;
+  color: black;
+  font-size: 25px;
+  padding: 14px 16px;
+  text-decoration: none;
+  border-radius: 0.5rem;
+}
+
+nav li a:hover {
+  background-color: darkgreen;
+}
+
+ul {
+  list-style-type: none;
+  overflow: hidden;
+}
+
+.selected {
+  background-color: green;
+  color: white;
+}
+
+button {
+  padding: 10px;
+  font-size: 16px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  transition-duration: 0.4s;
+}
+
+.addtocart {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.addtocart button{
+  padding: 10px;
+  font-size: 24px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  transition-duration: 0.4s;
+}
+
+.addtocart button:hover {
+  background-color: #4CAF50; /* Green */
+  border: 2px solid darkgreen;
+  cursor:pointer;
+}
+
+.saleUI {
+  display: flex;
+  justify-content: space-around;
+}
+
+.completedOrders {
+  padding: 20px;
+}
+
+.order {
+  padding: 15px;
+  background-color: rgb(250, 246, 215);
+}
+
+.order ul {
+  background-color: rgb(147, 248, 248);
+  font-size: 24px;
+}
+
+.order button {
+  background-color: rgb(255, 124, 124);
+  font-size: 18px;
+}
+
+.order button:hover {
+  background-color: crimson;
+}
+
+.cart {
+  background-color: rgb(250, 246, 215);
+  font-size: 24px;
+  padding: 15px;
+}
+
+.cart button {
+  background-color: rgb(131, 236, 255);
+  font-size: 24px;
+}
+
+.cart button:hover {
+  background-color:rgb(52, 155, 57);
+  font-size: 24px;
+}
+
+.popup {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.cart .selected {
+  background-color: green;
+  color: white;
+}
