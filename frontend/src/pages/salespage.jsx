@@ -23,12 +23,25 @@ function SalesPage() {
     const [deal, setDeal] = useState("");
     const [products, setProducts] = useState([]);
     const [discount, setDiscount] = useState(0);
-    const API_URL = import.meta.env.VITE_API_URL;
+    const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5001";
     
     useEffect(() => {
-        fetch(`${API_URL}/orders`)
-        .then(res => res.json())
-        .then(data => setOrders(data));
+    fetch(`${API_URL}/orders`)
+        .then(async (res) => {
+            const data = await res.json();
+
+            console.log("ORDERS API RESPONSE:", data);
+
+            if (Array.isArray(data)) {
+                setOrders(data);
+            } else {
+                setOrders([]); // fallback prevents crash
+            }
+        })
+        .catch(err => {
+            console.error("Fetch failed:", err);
+            setOrders([]);
+        });
     }, []);
     
     const adjustProduct = (productName) => {
