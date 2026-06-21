@@ -4,6 +4,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const ProductModel = require("./models/ProductSchema");
 const OrderModel = require("./models/OrderSchema");
+const path = require("path");
 
 dotenv.config();
 
@@ -14,17 +15,18 @@ app.use(cors());
 const PORT = process.env.PORT || 5001;
 const MONGO_URI = process.env.MONGO_URI;
 
-mongoose
-    .connect(MONGO_URI)
-    .then(() => console.log("Connected to MongoDB"))
-    .catch((err) => console.error("MongooseDB connection error: ", err));
+mongoose.connect(MONGO_URI)
+  .then(() => {
+    console.log("Connected to MongoDB");
+
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  })
+  .catch(err => console.error(err));
 
 app.get("/", (req, res) => {
     res.send("API is running");
-});
-
-app.listen(PORT, () => {
-    console.log("server is running on port" + PORT);
 });
 
 app.get("/products", async (req, res) => {
@@ -32,7 +34,7 @@ app.get("/products", async (req, res) => {
   res.json(products);
 });
 
-app.get("/sales", async (req, res) => {
+app.get("/api/sales", async (req, res) => {
   const products = await ProductModel.find();
   res.json(products);
 });
@@ -120,7 +122,7 @@ app.get("/orders", async (req, res) => {
     try {
     const orders = await OrderModel.find();
 
-    res.json(orders);
+    res.json(orders || []);
     } catch (err) {
     res.status(500).json({
         error: err.message
@@ -280,3 +282,6 @@ app.get("/export-orders", async (req, res) => {
     res.attachment("orders.csv");
     res.send(csv);
 });
+
+
+//ALWAYS LAST
