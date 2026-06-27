@@ -5,7 +5,8 @@ specifics with more buttons and stuff and prices
 discounts/deals
 i traded lol
 cash or card
-fandom
+fandom then design options
+
 */
 
 
@@ -205,18 +206,18 @@ function SalesPage() {
         >None</button>
 
         <button
-        onClick={() => {setDiscount(5), setDeal("3 for $40 l prints")}}
-        className={deal === "3 for $40 l prints" ? "selected" : ""}
+        onClick={() => {setDiscount(5), setDeal("3 for $40 L prints")}}
+        className={deal === "3 for $40 L prints" ? "selected" : ""}
         >3 for $40 l prints</button>
 
         <button
-        onClick={() => {setDiscount(5), setDeal("3 for $25 s prints")}}
-        className={deal === "3 for $30" ? "selected" : ""}
-        >3 for $30 s prints</button>
+        onClick={() => {setDiscount(5), setDeal("3 for $25 S prints")}}
+        className={deal === "3 for $25 S prints" ? "selected" : ""}
+        >3 for $25 s prints</button>
 
         <button
         onClick={() => {setDiscount(1), setDeal("3 for 8 stickers")}}
-        className={deal === "3 stickers for 8" ? "selected" : ""}
+        className={deal === "3 for 8 stickers" ? "selected" : ""}
         >
         3 stickers for 8</button>
 
@@ -227,7 +228,7 @@ function SalesPage() {
 
         <button
         onClick={() => {setDiscount(3), setDeal("3 for 15 Sticker Sheet")}}
-        className={deal === "Sticker Sheet" ? "selected" : ""}
+        className={deal === "3 for 15 Sticker Sheet" ? "selected" : ""}
         >Sticker Sheet</button>
 
         <button
