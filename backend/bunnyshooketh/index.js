@@ -150,9 +150,9 @@ app.get("/seed-products", async (req, res) => {
     await ProductModel.findOneAndUpdate(
         {name: "Stickers"}, {
         $set: {fields: {
-            fandom: ["Blue Lock", "Bunny", "Chiiawaka", "Delatrune", "Genshin Impact", "LADS", "Limbus Company", "Miffy", "Nezha", "Overwatch", "TBHX", "Twisted Wonderland", "Valorant", "Vocaloid"],
-            design: ["Dog", "Cat"],
-            quantity: [1, 2, 3, 4, 5]
+            fandom: ["Bunny", "Delatrune", "Genshin Impact", "Limbus Company", "Nezha", "Twisted Wonderland", "Valorant", "Vocaloid"],
+            design: ["dunce faust", "winrate", "wordle", "kaito grape", "Zoey", "rumi", "medicine don", "shinobu", "Xiao lantern", "flins", "white rabbit", "Xavier wedding", "purple bunny", "green bunny", "mystery"],
+            quantity: [1, 2, 3, 4, 5, 6]
         },
         pricing: {
             "base": 3
@@ -163,9 +163,9 @@ app.get("/seed-products", async (req, res) => {
     await ProductModel.findOneAndUpdate({
         name: "Prints"},{
         $set: {fields: {
-            fandom: ["Blue Lock", "Bunny", "Chiiawaka", "Delatrune", "Genshin Impact", "LADS", "Limbus Company", "Miffy", "Nezha", "Overwatch", "TBHX", "Twisted Wonderland", "Valorant", "Vocaloid"],
+            fandom: ["Genshin Impact", "Limbus Company", "Nezha", "Overwatch", "Flowers bloom", "Vocaloid"],
             size: ["small", "large"],
-            design: ["aaa", "bbb"],
+            design: ["Wuyang", "anran", "kris night", "kris light", "flowers comic", "king Xavier", "teto", "nezha", "flins", "Colmbina", "canto ego ryoshu", "canto honglu", "canto yisang", "silver knight", "Deuce star", "sliver rabbit", "idia", "riddle lantern", "faust gallery", "rodya gallery", "honglu gallery"],
             quantity: [1, 2, 3, 4, 5]
         },
         pricing: {
@@ -178,8 +178,8 @@ app.get("/seed-products", async (req, res) => {
     await ProductModel.findOneAndUpdate({
         name: "Keychains"},{
         $set: {fields: {
-            fandom: ["Blue Lock", "Bunny", "Chiiawaka", "Delatrune", "Genshin Impact", "LADS", "Limbus Company", "Miffy", "Nezha", "Overwatch", "TBHX", "Twisted Wonderland", "Valorant", "Vocaloid"],
-            design: ["asdf", "hdfghg"],
+            fandom: ["Blue Lock", "Bunny", "Genshin Impact", "Limbus Company", "TBHX", "Twisted Wonderland", "Valorant", "Vocaloid"],
+            design: ["sage", "omen", "viper", "fade", "neon", "reyna", "cypher", "gecko", "jett", "faust", "yisang", "Don Quixote", "Honglu", "Heathcliff", "Ishmael", "Sinclair", "Ryoshu", "Meursault", "Gregor", "Rodya", "Outis", "Dante", "Bari", "Canto Ego Don", "Canto Ego Honglu", "MangerDon", "Riddle", "Malleus", "Azul", "Leona", "Vil", "Kalim", "Idia", "X", "Nice", "LingLin", "Ghostblade", "Queen", "Loli", "THAT DOG I HATE", "Lucky Cyan", "Dragon boy", "Esoul", "Little Johnny", "Enjin", "Zanka", "Amo", "Tamsy", "Rudo", "Riyo", "Shinobu", "Bari", "Canto Ego Don", "Canto Ego Honglu", "MangerDon", "Strawberry cake", "melon soda", "Nagi", "rin", "reo", "Isagi", "Miku cinnamon roll", "Flower cake", "Kaito", "Rin", "Len", "Miku", "Meiko", "full cherry", "full og"],
             quantity: [1, 2, 3, 4, 5]
         },
         pricing: {
@@ -191,8 +191,8 @@ app.get("/seed-products", async (req, res) => {
     await ProductModel.findOneAndUpdate({
         name: "Sticker Sheet"},{
         $set: {fields: {
-            fandom: ["Blue Lock", "Bunny", "Chiiawaka", "Delatrune", "Genshin Impact", "LADS", "Limbus Company", "Miffy", "Nezha", "Overwatch", "TBHX", "Twisted Wonderland", "Valorant", "Vocaloid"],
-            design: ["asdf", "hdfghg"],
+            fandom: ["Chiiawaka", "Miffy"],
+            design: ["CW Food", "CW Emotions", "CW Study", "MY Bake", "MY matcha", "MY fruit", "MU Songs"],
             quantity: [1, 2, 3, 4, 5]
         },
         pricing: {
@@ -204,8 +204,8 @@ app.get("/seed-products", async (req, res) => {
     await ProductModel.findOneAndUpdate({
         name: "Heart Pins"},{
         $set: {fields: {
-            fandom: ["Blue Lock", "Bunny", "Chiiawaka", "Delatrune", "Genshin Impact", "LADS", "Limbus Company", "Miffy", "Nezha", "Overwatch", "TBHX", "Twisted Wonderland", "Valorant", "Vocaloid"],
-            design: ["asdf", "hdfghg"],
+            fandom: ["LADS"],
+            design: ["Xavier", "stylus", "Zayne", "Rafael", "Caleb"],
             quantity: [1, 2, 3, 4, 5]
         },
         pricing: {
@@ -217,8 +217,8 @@ app.get("/seed-products", async (req, res) => {
     await ProductModel.findOneAndUpdate({
         name: "Foil Pins"},{
         $set: {fields: {
-            fandom: ["Blue Lock", "Bunny", "Chiiawaka", "Delatrune", "Genshin Impact", "LADS", "Limbus Company", "Miffy", "Nezha", "Overwatch", "TBHX", "Twisted Wonderland", "Valorant", "Vocaloid"],
-            design: ["asdf", "hdfghg"],
+            fandom: ["Delatrune"],
+            design: ["Kris", "Susie", "Ralsei"],
             quantity: [1, 2, 3, 4, 5]
         },
         pricing: {
@@ -230,25 +230,12 @@ app.get("/seed-products", async (req, res) => {
     await ProductModel.findOneAndUpdate({
         name: "Standees"},{
         $set: {fields: {
-            fandom: ["Blue Lock", "Bunny", "Chiiawaka", "Delatrune", "Genshin Impact", "LADS", "Limbus Company", "Miffy", "Nezha", "Overwatch", "TBHX", "Twisted Wonderland", "Valorant", "Vocaloid"],
-            design: ["asdf", "hdfghg"],
+            fandom: ["Limbus Company"],
+            design: ["big 3 don"],
             quantity: [1, 2, 3, 4, 5]
         },
         pricing: {
             "base": 15
-        }}},
-    {upsert: true}
-    );
-    
-    await ProductModel.findOneAndUpdate({
-        name: "Folding Screen"},{
-        $set: {fields: {
-            fandom: ["Blue Lock", "Bunny", "Chiiawaka", "Delatrune", "Genshin Impact", "LADS", "Limbus Company", "Miffy", "Nezha", "Overwatch", "TBHX", "Twisted Wonderland", "Valorant", "Vocaloid"],
-            design: ["asdf", "hdfghg"],
-            quantity: [1, 2, 3, 4, 5]
-        },
-        pricing: {
-            "base": 40
         }}},
     {upsert: true}
     );
