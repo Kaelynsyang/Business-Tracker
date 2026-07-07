@@ -146,12 +146,39 @@ app.delete("/orders/:id", async (req, res) => {
 
 //Products
 
+
 app.get("/seed-products", async (req, res) => {
+    await ProductModel.deleteMany({});
     await ProductModel.findOneAndUpdate(
         {name: "Stickers"}, {
         $set: {fields: {
-            fandom: ["Bunny", "Delatrune", "Genshin Impact", "Limbus Company", "Nezha", "Twisted Wonderland", "Valorant", "Vocaloid"],
-            design: ["dunce faust", "winrate", "wordle", "kaito grape", "Zoey", "rumi", "medicine don", "shinobu", "Xiao lantern", "flins", "white rabbit", "Xavier wedding", "purple bunny", "green bunny", "mystery"],
+            fandom: [
+                { value: "Bunny"},
+                { value: "Demon Slayer"},
+                { value: "Genshin Impact"},
+                { value: "LADS"},
+                { value: "Limbus Company"},
+                { value: "Kpop DH"},
+                { value: "Nezha"},
+                { value: "Vocaloid"}],
+            design: [
+                { value: "purple bunny", dependsOn: { fandom: "Bunny"}},
+                { value: "green bunny", dependsOn: { fandom: "Bunny"}},
+                { value: "white rabbit", dependsOn: { fandom: "Bunny"}},
+                { value: "shinobu", dependsOn: { fandom: "Demon Slayer"}},
+                { value: "Xiao lantern", dependsOn: { fandom: "Genshin Impact"}},
+                { value: "flins", dependsOn: { fandom: "Genshin Impact"}},
+                { value: "Xavier wedding", dependsOn: { fandom: "LADS"}},
+                { value: "dunce faust", dependsOn: { fandom: "Limbus Company"}},
+                { value: "winrate", dependsOn: { fandom: "Limbus Company"}},
+                { value: "wordle", dependsOn: { fandom: "Limbus Company"}},
+                { value: "medicine don", dependsOn: { fandom: "Limbus Company"}},
+                { value: "rumi", dependsOn: { fandom: "Kpop DH"}},
+                { value: "Mira", dependsOn: { fandom: "Kpop DH"}},
+                { value: "Zoey", dependsOn: { fandom: "Kpop DH"}},
+                { value: "mystery", dependsOn: { fandom: "Kpop DH"}},
+                { value: "nezha", dependsOn: { fandom: "Nezha"}},
+                { value: "kaito grape", dependsOn: { fandom: "Vocaloid"}}],
             quantity: [1, 2, 3, 4, 5, 6]
         },
         pricing: {
@@ -163,9 +190,40 @@ app.get("/seed-products", async (req, res) => {
     await ProductModel.findOneAndUpdate({
         name: "Prints"},{
         $set: {fields: {
-            fandom: ["Genshin Impact", "Limbus Company", "Nezha", "Overwatch", "Flowers bloom", "Vocaloid"],
+            fandom: [
+                { value: "Deltarune"},
+                { value: "Flowers bloom"},
+                { value: "Genshin Impact"},
+                { value: "LADS"},
+                { value: "Limbus Company"},
+                { value: "Nezha"},
+                { value: "Overwatch"},
+                { value: "Twisted Wonderland"},
+                { value: "Vocaloid"}
+            ],
             size: ["small", "large"],
-            design: ["Wuyang", "anran", "kris night", "kris light", "flowers comic", "king Xavier", "teto", "nezha", "flins", "Colmbina", "canto ego ryoshu", "canto honglu", "canto yisang", "silver knight", "Deuce star", "sliver rabbit", "idia", "riddle lantern", "faust gallery", "rodya gallery", "honglu gallery"],
+            design: [
+                { value: "kris night", dependsOn: { fandom: "Deltarune"}},
+                { value: "kris light", dependsOn: { fandom: "Deltarune"}},
+                { value: "flowers comic", dependsOn: { fandom: "Flowers bloom"}},
+                { value: "Colmbina", dependsOn: { fandom: "Genshin Impact"}},
+                { value: "flins", dependsOn: { fandom: "Genshin Impact"}},
+                { value: "king Xavier", dependsOn: { fandom: "LADS"}},
+                { value: "canto ego ryoshu", dependsOn: { fandom: "Limbus Company"}},
+                { value: "canto honglu", dependsOn: { fandom: "Limbus Company"}},
+                { value: "canto yisang", dependsOn: { fandom: "Limbus Company"}},
+                { value: "faust gallery", dependsOn: { fandom: "Limbus Company"}},
+                { value: "rodya gallery", dependsOn: { fandom: "Limbus Company"}},
+                { value: "honglu gallery", dependsOn: { fandom: "Limbus Company"}},
+                { value: "nezha", dependsOn: { fandom: "Nezha"}},
+                { value: "Wuyang", dependsOn: { fandom: "Overwatch"}},
+                { value: "anran", dependsOn: { fandom: "Overwatch"}},
+                { value: "riddle lantern", dependsOn: { fandom: "Twisted Wonderland"}},
+                { value: "Deuce star", dependsOn: { fandom: "Twisted Wonderland"}},
+                { value: "silver knight", dependsOn: { fandom: "Twisted Wonderland"}},
+                { value: "silver rabbit", dependsOn: { fandom: "Twisted Wonderland"}},
+                { value: "idia", dependsOn: { fandom: "Twisted Wonderland"}},
+                { value: "teto", dependsOn: { fandom: "Vocaloid"}}],
             quantity: [1, 2, 3, 4, 5]
         },
         pricing: {
@@ -178,9 +236,83 @@ app.get("/seed-products", async (req, res) => {
     await ProductModel.findOneAndUpdate({
         name: "Keychains"},{
         $set: {fields: {
-            fandom: ["Blue Lock", "Bunny", "Genshin Impact", "Limbus Company", "TBHX", "Twisted Wonderland", "Valorant", "Vocaloid"],
-            design: ["sage", "omen", "viper", "fade", "neon", "reyna", "cypher", "gecko", "jett", "faust", "yisang", "Don Quixote", "Honglu", "Heathcliff", "Ishmael", "Sinclair", "Ryoshu", "Meursault", "Gregor", "Rodya", "Outis", "Dante", "Bari", "Canto Ego Don", "Canto Ego Honglu", "MangerDon", "Riddle", "Malleus", "Azul", "Leona", "Vil", "Kalim", "Idia", "X", "Nice", "LingLin", "Ghostblade", "Queen", "Loli", "THAT DOG I HATE", "Lucky Cyan", "Dragon boy", "Esoul", "Little Johnny", "Enjin", "Zanka", "Amo", "Tamsy", "Rudo", "Riyo", "Shinobu", "Bari", "Canto Ego Don", "Canto Ego Honglu", "MangerDon", "Strawberry cake", "melon soda", "Nagi", "rin", "reo", "Isagi", "Miku cinnamon roll", "Flower cake", "Kaito", "Rin", "Len", "Miku", "Meiko", "full cherry", "full og"],
-            quantity: [1, 2, 3, 4, 5]
+            fandom: [
+                { value: "Blue Lock"},
+                { value: "Bunny"},
+                { value: "Demon Slayer"},
+                { value: "Flowers bloom"},
+                { value: "Gachiakuta"},
+                { value: "Limbus Company"},
+                { value: "TBHX"},
+                { value: "Twisted Wonderland"},
+                { value: "Valorant"},
+                { value: "Vocaloid"}
+            ],
+            design: [
+                { value: "rin", dependsOn: { fandom: "Blue Lock"}},
+                { value: "reo", dependsOn: { fandom: "Blue Lock"}},
+                { value: "nagi", dependsOn: { fandom: "Blue Lock"}},
+                { value: "Isagi", dependsOn: { fandom: "Blue Lock"}},
+                { value: "Strawberry cake", dependsOn: { fandom: "Bunny"}},
+                { value: "melon soda", dependsOn: { fandom: "Bunny"}},
+                { value: "Shinobu", dependsOn: { fandom: "Demon Slayer"}},
+                { value: "flower cake", dependsOn: { fandom: "Flowers bloom"}},
+                { value: "Enjin", dependsOn: { fandom: "Gachiakuta"}},
+                { value: "Zanka", dependsOn: { fandom: "Gachiakuta"}},
+                { value: "Amo", dependsOn: { fandom: "Gachiakuta"}},
+                { value: "Tamsy", dependsOn: { fandom: "Gachiakuta"}},
+                { value: "Rudo", dependsOn: { fandom: "Gachiakuta"}},
+                { value: "Riyo", dependsOn: { fandom: "Gachiakuta"}},
+                { value: "faust", dependsOn: { fandom: "Limbus Company"}},
+                { value: "yisang", dependsOn: { fandom: "Limbus Company"}},
+                { value: "Don Quixote", dependsOn: { fandom: "Limbus Company"}},
+                { value: "Honglu", dependsOn: { fandom: "Limbus Company"}},
+                { value: "Heathcliff", dependsOn: { fandom: "Limbus Company"}},
+                { value: "Ishmael", dependsOn: { fandom: "Limbus Company"}},
+                { value: "Sinclair", dependsOn: { fandom: "Limbus Company"}},
+                { value: "Ryoshu", dependsOn: { fandom: "Limbus Company"}},
+                { value: "Meursault", dependsOn: { fandom: "Limbus Company"}},
+                { value: "Gregor", dependsOn: { fandom: "Limbus Company"}},
+                { value: "Rodya", dependsOn: { fandom: "Limbus Company"}},
+                { value: "Outis", dependsOn: { fandom: "Limbus Company"}},
+                { value: "Dante", dependsOn: { fandom: "Limbus Company"}},
+                { value: "Bari", dependsOn: { fandom: "Limbus Company"}},
+                { value: "Canto Ego Don", dependsOn: { fandom: "Limbus Company"}},
+                { value: "Canto Ego Honglu", dependsOn: { fandom: "Limbus Company"}},
+                { value: "MangerDon", dependsOn: { fandom: "Limbus Company"}},
+                { value: "X", dependsOn: { fandom: "TBHX"}},
+                { value: "Nice", dependsOn: { fandom: "TBHX"}},
+                { value: "LingLin", dependsOn: { fandom: "TBHX"}},
+                { value: "Ghostblade", dependsOn: { fandom: "TBHX"}},
+                { value: "Queen", dependsOn: { fandom: "TBHX"}},
+                { value: "Loli", dependsOn: { fandom: "TBHX"}},
+                { value: "THAT DOG I HATE", dependsOn: { fandom: "TBHX"}},
+                { value: "Lucky Cyan", dependsOn: { fandom: "TBHX"}},
+                { value: "Dragon boy", dependsOn: { fandom: "TBHX"}},
+                { value: "Little Johnny", dependsOn: { fandom: "TBHX"}},
+                { value: "Riddle", dependsOn: { fandom: "Twisted Wonderland"}},
+                { value: "Malleus", dependsOn: { fandom: "Twisted Wonderland"}},
+                { value: "Azul", dependsOn: { fandom: "Twisted Wonderland"}},
+                { value: "Leona", dependsOn: { fandom: "Twisted Wonderland"}},
+                { value: "Vil", dependsOn: { fandom: "Twisted Wonderland"}},
+                { value: "Kalim", dependsOn: { fandom: "Twisted Wonderland"}},
+                { value: "Idia", dependsOn: { fandom: "Twisted Wonderland"}},
+                { value: "jett", dependsOn: { fandom: "Valorant"}},
+                { value: "gecko", dependsOn: { fandom: "Valorant"}},
+                { value: "cypher", dependsOn: { fandom: "Valorant"}},
+                { value: "reyna", dependsOn: { fandom: "Valorant"}},
+                { value: "fade", dependsOn: { fandom: "Valorant"}},
+                { value: "viper", dependsOn: { fandom: "Valorant"}},
+                { value: "omen", dependsOn: { fandom: "Valorant"}},
+                { value: "sage", dependsOn: { fandom: "Valorant"}},
+                { value: "Kaito", dependsOn: { fandom: "Vocaloid"}},
+                { value: "Rin", dependsOn: { fandom: "Vocaloid"}},
+                { value: "Len", dependsOn: { fandom: "Vocaloid"}},
+                { value: "Miku", dependsOn: { fandom: "Vocaloid"}},
+                { value: "Miku cinnamon roll", dependsOn: { fandom: "Vocaloid"}},
+                { value: "full cherry", dependsOn: { fandom: "Vocaloid"}},
+                { value: "full og", dependsOn: { fandom: "Vocaloid"}}],
+                quantity: [1, 2, 3, 4, 5]
         },
         pricing: {
             "base": 12
@@ -191,8 +323,18 @@ app.get("/seed-products", async (req, res) => {
     await ProductModel.findOneAndUpdate({
         name: "Sticker Sheet"},{
         $set: {fields: {
-            fandom: ["Chiiawaka", "Miffy"],
-            design: ["CW Food", "CW Emotions", "CW Study", "MY Bake", "MY matcha", "MY fruit", "MU Songs"],
+            fandom: [
+                { value: "Chiiawaka" },
+                { value: "Miffy"}],
+            design: [
+                { value: "CW Food", dependsOn: { fandom: "Chiiawaka"}},
+                { value: "CW Emotions", dependsOn: { fandom: "Chiiawaka"}},
+                { value: "CW Study", dependsOn: { fandom: "Chiiawaka"}},
+                { value: "MY Bake", dependsOn: { fandom: "Miffy"}},
+                { value: "MY matcha", dependsOn: { fandom: "Miffy"}},
+                { value: "MY fruit", dependsOn: { fandom: "Miffy"}},
+                { value: "MU Songs", dependsOn: { fandom: "Miffy"}},
+            ],
             quantity: [1, 2, 3, 4, 5]
         },
         pricing: {
@@ -203,9 +345,16 @@ app.get("/seed-products", async (req, res) => {
     
     await ProductModel.findOneAndUpdate({
         name: "Heart Pins"},{
-        $set: {fields: {
-            fandom: ["LADS"],
-            design: ["Xavier", "stylus", "Zayne", "Rafael", "Caleb"],
+        $set: {
+            fields: {
+            fandom: [
+                { value: "LADS"}],
+            design: [
+                { value: "Xavier", dependsOn: { fandom: "LADS"}},
+                { value: "stylus", dependsOn: { fandom: "LADS"}},
+                { value: "Zayne", dependsOn: { fandom: "LADS"}},
+                { value: "Rafael", dependsOn: { fandom: "LADS"}},
+                { value: "Caleb", dependsOn: { fandom: "LADS"}}],
             quantity: [1, 2, 3, 4, 5]
         },
         pricing: {
@@ -217,8 +366,13 @@ app.get("/seed-products", async (req, res) => {
     await ProductModel.findOneAndUpdate({
         name: "Foil Pins"},{
         $set: {fields: {
-            fandom: ["Delatrune"],
-            design: ["Kris", "Susie", "Ralsei"],
+            fandom: [
+                {value: "Deltarune"}
+            ],
+            design: [
+                { value: "Kris", dependsOn: { fandom: "Deltarune"}},
+                { value: "Susie", dependsOn: { fandom: "Deltarune"}},
+                { value: "Ralsei", dependsOn: { fandom: "Deltarune"}},],
             quantity: [1, 2, 3, 4, 5]
         },
         pricing: {
@@ -230,8 +384,12 @@ app.get("/seed-products", async (req, res) => {
     await ProductModel.findOneAndUpdate({
         name: "Standees"},{
         $set: {fields: {
-            fandom: ["Limbus Company"],
-            design: ["big 3 don"],
+            fandom: [
+                { value: "Limbus Company"}
+                ],
+            design: [
+                {value: "big 3 don", dependsOn: { fandom: "Limbus Company"}}
+            ],
             quantity: [1, 2, 3, 4, 5]
         },
         pricing: {
@@ -269,6 +427,5 @@ app.get("/export-orders", async (req, res) => {
     res.attachment("orders.csv");
     res.send(csv);
 });
-
 
 //ALWAYS LAST
