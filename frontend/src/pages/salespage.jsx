@@ -111,6 +111,11 @@ function SalesPage() {
     };
 
     useEffect(() => {
+        setSelectedOption({});
+        setQuantity(1);
+    }, [selectedProduct]);
+
+    useEffect(() => {
         fetch(`${API_URL}/products`)
         .then(res => res.json())
         .then(data => setProducts(data));
@@ -120,14 +125,28 @@ function SalesPage() {
         products.map(p => [p.name, p])
     );
 
-    const selectedProductData = products.find(
-        p => p.name === selectedProduct
-    );
+    const selectedProductData = selectedProduct
+        ? products.find(p => p.name === selectedProduct)
+        : null;
+
+    const fieldOrder = ["fandom", "size", "design", "quantity"];
+
+    const selectedProductFieldNames = selectedProductData?.fields
+        ? Object.keys(selectedProductData.fields).sort((a, b) => {
+            const indexA = fieldOrder.indexOf(a);
+            const indexB = fieldOrder.indexOf(b);
+            if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+            if (indexA !== -1) return -1;
+            if (indexB !== -1) return 1;
+            return a.localeCompare(b);
+        })
+        : [];
 
     const subtotal = order.reduce((sum, item) => sum + item.lineTotal, 0);
 
     const total = Math.max(subtotal - discount, 0);
-    
+
+
     return (
     <div>
       <h1>Record Sales</h1>
@@ -143,51 +162,81 @@ function SalesPage() {
             </button>
             ))}
         </div>
-            {selectedProduct && (
-  <div className="popup">
-    <h2>{selectedProduct}</h2>
-    
-    {selectedProductData?.fields && Object.entries(selectedProductData.fields)
-    .filter(([_, options]) => options && options.length > 0)
-    .map(([fieldName, options]) => (
-    <div key={fieldName}>
-      <h3>{fieldName}</h3>
+    {selectedProduct && (
+        <div className="popup">
+            <h2>{selectedProduct}</h2>
+        
+            {selectedProductData?.fields &&
+            selectedProductFieldNames.map((fieldName) => {
+                const options = selectedProductData.fields[fieldName];
+                const normalizedOptions = (Array.isArray(options) ? options : []).map(opt =>
+                    typeof opt === "string" || typeof opt === "number"
+                        ? { value: opt }
+                        : opt
+                );
 
-      {options.map((option) => (
-        <button
-          key={option}
-          onClick={() =>
-            setSelectedOption({
-              ...selectedOption,
-              [fieldName]: option
-            })
-          }
-          className={
-            selectedOption?.[fieldName] === option
-              ? "selected"
-              : ""
-          }
-        >
-          {option}
+                const visibleOptions = normalizedOptions.filter(option => {
+                    if (!option.dependsOn) return true;
+                    return Object.entries(option.dependsOn).every(([field, value]) => {
+                        return !selectedOption[field] || selectedOption[field] === value;
+                    });
+                });
+
+                if (visibleOptions.length === 0) {
+                    return (
+                        <div key={fieldName}>
+                            <h3>{fieldName}</h3>
+                            <p>
+                                {fieldName === "design"
+                                    ? "Select a fandom first to see designs."
+                                    : "No available options."}
+                            </p>
+                        </div>
+                    );
+                }
+
+                return (
+                    <div key={fieldName}>
+                        <h3>{fieldName}</h3>
+                        {visibleOptions.map((option) => {
+                            const value = option.value;
+
+                            return (
+                                <button
+                                    key={value}
+                                    onClick={() =>
+                                        setSelectedOption({
+                                            ...selectedOption,
+                                            [fieldName]: value
+                                        })
+                                    }
+                                    className={
+                                        selectedOption?.[fieldName] === value
+                                            ? "selected"
+                                            : ""
+                                    }
+                                >
+                                    {value}
+                                </button>
+                            );
+                        })}
+                    </div>
+                );
+            })}
+
+        <button onClick={addToCart}>
+          Add to Cart
         </button>
-      ))}
-    </div>
-  )
-)}
-
-    <button onClick={addToCart}>
-      Add to Cart
-    </button>
-    </div>
+      </div>
     )}
-        </div>
+    </div>
         <div className="cart">
             <ul>
                 {order.map((item, index) => (
-                    <li key={`${item.product}-${item.size}-${item.design}-${index}`}>
+                    <li key={`${item.product}-${index}`}>
                         {item.product}{" - "}
-                        {item.size && `${item.size} - `}
-                        {item.design && `${item.design} - `}
+                        {item.option?.size && `${item.option.size} - `}
+                        {item.option?.design && `${item.option.design} - `}
                         x{item.quantity} {" | "}
                         {Object.entries(item.option).map(([key, value]) => (
                             <span key={key}>
