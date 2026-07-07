@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const OptionSchema = require("./optionSchema");
+const OptionSchema = require("./OptionSchema");
 
 const ProductSchema = new mongoose.Schema({
     name: String,
