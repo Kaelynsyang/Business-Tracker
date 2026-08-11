@@ -8,6 +8,7 @@ const OrderSchema = new mongoose.Schema({
 
     deal: String,
     paymentMethod: String,
+    event: String, 
 
     items: [{
         product: String,

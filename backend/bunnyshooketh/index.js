@@ -4,6 +4,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const ProductModel = require("./models/ProductSchema");
 const OrderModel = require("./models/OrderSchema");
+const InventoryLog = require("./models/InventoryLogSchema");
 const path = require("path");
 
 dotenv.config();
@@ -98,44 +99,245 @@ app.post('/delete', async (req, res) => {
     }
 });
 
-
-//Orders
-
-app.post("/orders", async (req, res) => {
+app.patch("/products/adjust-stock", async (req, res) => {
     try {
-        console.log(req.body);
+        const { productId, design, size, adjustment, note } = req.body;
+        const product = await ProductModel.findById(productId);
 
-        const newOrder = new OrderModel(req.body);
-        const savedOrder = await newOrder.save();
+        if(!product) {
+            return res.status(404).json({ message: "Product not found"});
+        }
 
-        res.json(savedOrder);
-    } catch(err) {
-        console.error(err);
-        res.status(500).json({
-            error: err.message
-        });
-    }
-});
-
-
-app.get("/orders", async (req, res) => {
-    try {
-    const orders = await OrderModel.find();
-
-    res.json(orders || []);
-    } catch (err) {
-    res.status(500).json({
-        error: err.message
-    });
-    }
-});
-
-app.delete("/orders/:id", async (req, res) => {
-    try {
-        await OrderModel.findByIdAndDelete(
-            req.params.id
+        const inventoryItem = product.inventory.find(item => 
+            item.design === design &&
+            (item.size || null) === (size || null)
         );
+        
+        if (!inventoryItem){
+            return res.status(404).json({ message: "Inventory item not found" });
+        }
 
+        const stockBefore = inventoryItem.stock;
+
+        inventoryItem.stock += adjustment;
+
+        const stockAfter = inventoryItem.stock;
+
+        await product.save();
+
+        await InventoryLog.create({
+            productId: product._id,
+            productName: product.name,
+            design: inventoryItem.design,
+            size: inventoryItem.size,
+            change: adjustment,
+            stockBefore,
+            stockAfter,
+            note
+        })
+
+        res.json(product);
+    } catch (err) {
+        res.status(500).json({message: err.message})
+    }
+})
+
+function getTopEntry(countsObj) {
+    let firstKey = null;
+    let secondKey = null;
+    let thirdKey = null;
+    let first = 0;
+    let second = 0;
+    let third = 0;
+
+    for (const key in countsObj) {
+        const count = countsObj[key];
+        if (count > first) {
+            third = second;
+            thirdKey = secondKey;
+
+            second = first;
+            secondKey = firstKey;
+
+            first = count;
+            firstKey = key;
+        } else if (count > second) {
+            third = second;
+            thirdKey = secondKey;
+
+            second = count;
+            secondKey = key;
+        } else if (count > third) {
+            third = count;
+            thirdKey = key;
+        }
+    }
+
+    return { firstKey: firstKey, first: first, secondKey: secondKey, second: second, thirdKey: thirdKey, third: third };
+}
+
+
+app.get("/homepage", async (req, res) => {
+    try {
+    const event = req.query.event;
+    const fandom = req.query.fandom;
+    const logs = await InventoryLog.find();
+    const orders = await OrderModel.find();
+    const products = await ProductModel.find();
+
+    const hashMapTopSeller = {};
+    const hashMapTopType = {};
+    const hashMapTopFandom = {};
+    const hashMapTopDeal = {};
+    const hashMapTopEvent = {};
+    const hashMapTopPayment = {};
+    const hashMapDetails = {};
+    
+    const salesByProduct = {};
+    const salesByFandom = {};
+
+    let totalItemSoldCount = 0;
+    
+    const eventOrders = event
+    ? orders.filter(order => order.event === event)
+    : [];
+    
+    const fandomItems = fandom
+    ? orders.flatMap(order => 
+        order.items.filter(item => item.option.fandom === fandom))
+    : [];
+    
+    for (const log of logs) {
+        /* finance goes here prob */
+        if (!hashMapDetails[log.design]) {
+            hashMapDetails[log.design] = {
+                allTimeStock: 0,
+                totalSold: 0
+            };
+        }
+        if (log.change > 0){
+            hashMapDetails[log.design].allTimeStock += log.change;
+        } else if (log.change < 0) {
+            hashMapDetails[log.design].totalSold += Math.abs(log.change);
+        }
+    }
+
+    for (const order of orders) {
+        for (const item of order.items){
+            hashMapTopSeller[item.option.design] = (hashMapTopSeller[item.option.design] || 0) + item.quantity;
+            hashMapTopType[item.product] = (hashMapTopType[item.product] || 0) + item.quantity;
+            hashMapTopFandom[item.option.fandom] = (hashMapTopFandom[item.option.fandom] || 0) + item.quantity;
+            totalItemSoldCount += item.quantity;
+        }
+        if (order.deal != "None"){
+            hashMapTopDeal[order.deal] = (hashMapTopDeal[order.deal] || 0) + 1;
+        }
+        hashMapTopEvent[order.event] = (hashMapTopEvent[order.event] || 0) + order.total;
+        hashMapTopPayment[order.paymentMethod] = (hashMapTopPayment[order.paymentMethod] || 0) + 1;
+    }
+    
+    for (const order of eventOrders) {
+        for (const item of order.items){
+            const key = `${item.product}-${item.option.design}`;
+            salesByProduct[key] = (salesByProduct[key] || 0) + item.quantity;
+        }
+    }
+
+    for (const item of fandomItems) {
+        const key = `${item.product}-${item.option.design}`;
+        salesByFandom[key] = (salesByFandom[key] || 0) + item.quantity;
+    }
+
+    const max_topSeller = getTopEntry(hashMapTopSeller);
+    const max_topType = getTopEntry(hashMapTopType);
+    const max_topFandom = getTopEntry(hashMapTopFandom);
+    const max_topDeal = getTopEntry(hashMapTopDeal);
+    const max_topEvent = getTopEntry(hashMapTopEvent);
+    const max_topPayment = getTopEntry(hashMapTopPayment);
+
+    const eventResults = products.flatMap(product => 
+        product.fields.design.map(design => {
+            const key = `${product.name}-${design.value}`;
+        
+            return {
+                type: product.name,
+                design: design.value,
+                amountSold: salesByProduct[key] || 0
+    }}))
+
+    const fandomResults = products.flatMap(product => 
+        product.fields.design
+        .filter(design => design.dependsOn?.get("fandom") === fandom)
+        .map(design => {
+            const key = `${product.name}-${design.value}`;
+        
+            return {
+                type: product.name,
+                design: design.value,
+                amountSold: salesByFandom[key] || 0
+    }}))
+    
+    const fandoms = [
+        "Blue Lock", "Bunny", "Chiiawaka", "Deltarune", "Demon Slayer", "Flowers bloom", "Gachiakuta", "Genshin Impact", "Hypnosis Mic", "LADS", 
+        "Kpop DH", "Limbus Company", "Library of Ruina", "Miffy", "Nezha", "Overwatch", "TBHX", "Twisted Wonderland", "Valorant", "Vocaloid" 
+    ];
+
+    res.json({ //Clean this up later
+        topSeller: max_topSeller?.firstKey ?? null, 
+        topSellerCount: max_topSeller?.first ?? null, 
+        secondSeller: max_topSeller?.secondKey ?? null, 
+        secondSellerCount: max_topSeller?.second ?? null, 
+        thirdSeller: max_topSeller?.thirdKey ?? null, 
+        thirdSellerCount: max_topSeller?.third ?? null, 
+        topType: max_topType?.firstKey ?? null, 
+        topTypeCount: max_topType?.first ?? null, 
+        secondType: max_topType?.secondKey ?? null, 
+        secondTypeCount: max_topType?.second ?? null, 
+        thirdType: max_topType?.thirdKey ?? null, 
+        thirdTypeCount: max_topType?.third ?? null,
+        topFandom: max_topFandom?.firstKey ?? null, 
+        topFandomCount: max_topFandom?.first ?? null, 
+        secondFandom: max_topFandom?.secondKey ?? null, 
+        secondFandomCount: max_topFandom?.second ?? null, 
+        thirdFandom: max_topFandom?.thirdKey ?? null, 
+        thirdFandomCount: max_topFandom?.third ?? null,
+        topDeal: max_topDeal?.firstKey ?? null, 
+        topDealCount: max_topDeal?.first ?? null, 
+        topEvent: max_topEvent?.firstKey ?? null, 
+        topEventCount: max_topEvent?.first ?? null, 
+        topPayment: max_topPayment?.firstKey ?? null,
+        topPaymentCount: max_topPayment?.first ?? null,
+        totalItemSoldCount: totalItemSoldCount,
+        hashMapDetails: hashMapDetails,
+        eventResults: eventResults,
+        fandoms: fandoms,
+        fandomResults: fandomResults
+    });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: err.message });
+    }})
+
+
+
+
+// Inventory and jazz
+
+app.get("/inventory-logs", async (req, res) => {
+    try {
+    const logs = await InventoryLog.find()
+                                   .sort({ createdAt: -1 });
+    res.json(logs);
+    } catch (err) {
+        res.status(500).json({ error: error.message });
+    }
+})
+
+app.delete("/inventory-logs/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const log = await InventoryLog.findByIdAndDelete(id);
         res.sendStatus(200);
     } catch (err) {
         res.status(500).json({
@@ -144,24 +346,7 @@ app.delete("/orders/:id", async (req, res) => {
     }
 })
 
-//Products
-
-
-app.get("/seed-products", async (req, res) => {
-    await ProductModel.deleteMany({});
-    await ProductModel.findOneAndUpdate(
-        {name: "Stickers"}, {
-        $set: {fields: {
-            fandom: [
-                { value: "Bunny"},
-                { value: "Demon Slayer"},
-                { value: "Genshin Impact"},
-                { value: "LADS"},
-                { value: "Limbus Company"},
-                { value: "Kpop DH"},
-                { value: "Nezha"},
-                { value: "Vocaloid"}],
-            design: [
+const stickerDesigns = [
                 { value: "purple bunny", dependsOn: { fandom: "Bunny"}},
                 { value: "green bunny", dependsOn: { fandom: "Bunny"}},
                 { value: "white rabbit", dependsOn: { fandom: "Bunny"}},
@@ -178,31 +363,14 @@ app.get("/seed-products", async (req, res) => {
                 { value: "Zoey", dependsOn: { fandom: "Kpop DH"}},
                 { value: "mystery", dependsOn: { fandom: "Kpop DH"}},
                 { value: "nezha", dependsOn: { fandom: "Nezha"}},
-                { value: "kaito grape", dependsOn: { fandom: "Vocaloid"}}],
-            quantity: [1, 2, 3, 4, 5, 6]
-        },
-        pricing: {
-            "base": 3
-        }}},
-    {upsert: true}
-    );
+                { value: "kaito grape", dependsOn: { fandom: "Vocaloid"}}];
 
-    await ProductModel.findOneAndUpdate({
-        name: "Prints"},{
-        $set: {fields: {
-            fandom: [
-                { value: "Deltarune"},
-                { value: "Flowers bloom"},
-                { value: "Genshin Impact"},
-                { value: "LADS"},
-                { value: "Limbus Company"},
-                { value: "Nezha"},
-                { value: "Overwatch"},
-                { value: "Twisted Wonderland"},
-                { value: "Vocaloid"}
-            ],
-            size: ["small", "large"],
-            design: [
+const stickerInventory = stickerDesigns.map(design => ({
+    design: design.value,
+    stock: 0
+}))
+
+const printDesigns = [
                 { value: "kris night", dependsOn: { fandom: "Deltarune"}},
                 { value: "kris light", dependsOn: { fandom: "Deltarune"}},
                 { value: "flowers comic", dependsOn: { fandom: "Flowers bloom"}},
@@ -218,37 +386,22 @@ app.get("/seed-products", async (req, res) => {
                 { value: "nezha", dependsOn: { fandom: "Nezha"}},
                 { value: "Wuyang", dependsOn: { fandom: "Overwatch"}},
                 { value: "anran", dependsOn: { fandom: "Overwatch"}},
-                { value: "riddle lantern", dependsOn: { fandom: "Twisted Wonderland"}},
+                { value: "riddle rapunzel", dependsOn: { fandom: "Twisted Wonderland"}},
                 { value: "Deuce star", dependsOn: { fandom: "Twisted Wonderland"}},
                 { value: "silver knight", dependsOn: { fandom: "Twisted Wonderland"}},
                 { value: "silver rabbit", dependsOn: { fandom: "Twisted Wonderland"}},
                 { value: "idia", dependsOn: { fandom: "Twisted Wonderland"}},
-                { value: "teto", dependsOn: { fandom: "Vocaloid"}}],
-            quantity: [1, 2, 3, 4, 5]
-        },
-        pricing: {
-            "small": 10,
-            "large": 15
-        }}},
-    {upsert: true}
-    );
+                { value: "teto", dependsOn: { fandom: "Vocaloid"}}]
 
-    await ProductModel.findOneAndUpdate({
-        name: "Keychains"},{
-        $set: {fields: {
-            fandom: [
-                { value: "Blue Lock"},
-                { value: "Bunny"},
-                { value: "Demon Slayer"},
-                { value: "Flowers bloom"},
-                { value: "Gachiakuta"},
-                { value: "Limbus Company"},
-                { value: "TBHX"},
-                { value: "Twisted Wonderland"},
-                { value: "Valorant"},
-                { value: "Vocaloid"}
-            ],
-            design: [
+const printInventory = printDesigns.flatMap(design => 
+    ["small", "large"].map(size => ({
+        design: design.value,
+        size,
+        stock: 0
+    }))
+)
+
+const keychainDesigns = [
                 { value: "rin", dependsOn: { fandom: "Blue Lock"}},
                 { value: "reo", dependsOn: { fandom: "Blue Lock"}},
                 { value: "nagi", dependsOn: { fandom: "Blue Lock"}},
@@ -311,22 +464,14 @@ app.get("/seed-products", async (req, res) => {
                 { value: "Miku", dependsOn: { fandom: "Vocaloid"}},
                 { value: "Miku cinnamon roll", dependsOn: { fandom: "Vocaloid"}},
                 { value: "full cherry", dependsOn: { fandom: "Vocaloid"}},
-                { value: "full og", dependsOn: { fandom: "Vocaloid"}}],
-                quantity: [1, 2, 3, 4, 5]
-        },
-        pricing: {
-            "base": 12
-        }}},
-    {upsert: true}
-    );
-    
-    await ProductModel.findOneAndUpdate({
-        name: "Sticker Sheet"},{
-        $set: {fields: {
-            fandom: [
-                { value: "Chiiawaka" },
-                { value: "Miffy"}],
-            design: [
+                { value: "full og", dependsOn: { fandom: "Vocaloid"}}]
+
+const keychainInventory = keychainDesigns.map(design => ({
+    design: design.value,
+    stock: 0
+}))
+
+const stickerSheetDesigns = [
                 { value: "CW Food", dependsOn: { fandom: "Chiiawaka"}},
                 { value: "CW Emotions", dependsOn: { fandom: "Chiiawaka"}},
                 { value: "CW Study", dependsOn: { fandom: "Chiiawaka"}},
@@ -334,72 +479,309 @@ app.get("/seed-products", async (req, res) => {
                 { value: "MY matcha", dependsOn: { fandom: "Miffy"}},
                 { value: "MY fruit", dependsOn: { fandom: "Miffy"}},
                 { value: "MU Songs", dependsOn: { fandom: "Miffy"}},
-            ],
-            quantity: [1, 2, 3, 4, 5]
-        },
-        pricing: {
-            "base": 6
-        }}},
-    {upsert: true}
-    );
-    
-    await ProductModel.findOneAndUpdate({
-        name: "Heart Pins"},{
-        $set: {
-            fields: {
-            fandom: [
-                { value: "LADS"}],
-            design: [
+            ]
+
+const stickerSheetInventory = stickerSheetDesigns.map(design => ({
+    design: design.value,
+    stock: 0
+}))
+
+const heartPinDesigns = [
                 { value: "Xavier", dependsOn: { fandom: "LADS"}},
                 { value: "stylus", dependsOn: { fandom: "LADS"}},
                 { value: "Zayne", dependsOn: { fandom: "LADS"}},
                 { value: "Rafael", dependsOn: { fandom: "LADS"}},
-                { value: "Caleb", dependsOn: { fandom: "LADS"}}],
+                { value: "Caleb", dependsOn: { fandom: "LADS"}}]
+
+const heartPinInventory = heartPinDesigns.map(design => ({
+    design: design.value,
+    stock: 0
+}))
+
+const foilPinsDesigns = [
+                { value: "Kris", dependsOn: { fandom: "Deltarune"}},
+                { value: "Susie", dependsOn: { fandom: "Deltarune"}},
+                { value: "Ralsei", dependsOn: { fandom: "Deltarune"}}]
+
+const foilPinsInventory = foilPinsDesigns.map(design => ({
+    design: design.value,
+    stock: 0
+}))
+
+const standeeDesigns = [
+                {value: "Canto 7: The Dream Ending", dependsOn: { fandom: "Limbus Company"}},
+                {value: "Canto 4: The Unchanging", dependsOn: { fandom: "Limbus Company"}},
+                {value: "Canto 9: The Unsevering", dependsOn: { fandom: "Limbus Company"}},
+            ]
+
+const standeeInventory = standeeDesigns.map(design => ({
+    design: design.value,
+    stock: 0
+}))
+
+const plushieDesigns = [
+                {value: "Angela", dependsOn: { fandom: "Library of Ruina"}},
+                {value: "Roland", dependsOn: { fandom: "Library of Ruina"}},
+                {value: "Samatoki", dependsOn: { fandom: "Hypnosis Mic"}},
+                {value: "Ramuda", dependsOn: { fandom: "Hypnosis Mic"}},
+                {value: "Doppo", dependsOn: { fandom: "Hypnosis Mic"}}
+            ]
+
+const plushieInventory = standeeDesigns.map(design => ({
+    design: design.value,
+    stock: 0
+}))
+
+async function mergeInventory(productName, fields, inventory, pricing){
+    const existingProduct = await ProductModel.findOne({ name: productName });
+
+    const mergedInventory = inventory.map(newItem => {
+    const existingItem = existingProduct?.inventory.find(item =>
+        item.design === newItem.design &&
+        item.size === newItem.size
+    );
+
+    return existingItem ?? newItem;
+});
+
+    await ProductModel.findOneAndUpdate(
+        {name: productName },
+        {
+            $set: {
+                fields,
+                inventory: mergedInventory,
+                pricing
+            }
+        },
+        { upsert: true }
+    )
+}
+
+
+// Orders
+
+app.post("/orders", async (req, res) => {
+    try {
+        const newOrder = new OrderModel(req.body);
+        const savedOrder = await newOrder.save();
+
+        for (const item of savedOrder.items){
+            const product = await ProductModel.findOne({ name: item.product });
+
+            const inventoryItem = product.inventory.find(
+                inv =>
+                    inv.design === item.option.design && 
+                    (inv.size || null) === (item.option.size || null)
+            );
+
+            console.log(item);
+            console.log(item.option);
+            
+            const stockBefore = inventoryItem.stock;
+            inventoryItem.stock -= item.quantity;
+            const stockAfter = inventoryItem.stock;
+            await product.save();
+            
+            await InventoryLog.create({
+                productId: product._id,
+                productName: product.name,
+                design: item.option.design,
+                size: item.option.size,
+                change: -item.quantity,
+                stockBefore,
+                stockAfter,
+                note: `Order #${savedOrder._id}`
+            });
+        }
+
+        res.json(savedOrder);
+
+    } catch(err) {
+        console.error(err);
+        res.status(500).json({
+            error: err.message
+        });
+    }
+});
+
+
+app.get("/orders", async (req, res) => {
+    try {
+    const orders = await OrderModel.find();
+
+    res.json([...orders].reverse() || []);
+    } catch (err) {
+    res.status(500).json({
+        error: err.message
+    });
+    }
+});
+
+app.delete("/orders/:id", async (req, res) => {
+    try {
+        await OrderModel.findByIdAndDelete(
+            req.params.id
+        );
+
+        res.sendStatus(200);
+    } catch (err) {
+        res.status(500).json({
+            error: err.message
+        });
+    }
+})
+
+//Products
+
+app.get("/seed-products", async (req, res) => {
+
+    await mergeInventory(
+        "Stickers", {
+            fandom: [
+                { value: "Bunny"},
+                { value: "Demon Slayer"},
+                { value: "Genshin Impact"},
+                { value: "Hypnosis Mic"},
+                { value: "LADS"},
+                { value: "Limbus Company"},
+                { value: "Kpop DH"},
+                { value: "Nezha"},
+                { value: "Vocaloid"}],
+            design: stickerDesigns,
+            quantity: [1, 2, 3, 4, 5, 6]
+        },
+        stickerInventory,
+        {
+            "base": 3
+        }
+    );
+
+    await mergeInventory(
+        "Prints", {
+            fandom: [
+                { value: "Deltarune"},
+                { value: "Flowers bloom"},
+                { value: "Genshin Impact"},
+                { value: "Hypnosis Mic"},
+                { value: "LADS"},
+                { value: "Limbus Company"},
+                { value: "Nezha"},
+                { value: "Overwatch"},
+                { value: "Twisted Wonderland"},
+                { value: "Vocaloid"}],
+            size: ["small", "large"],
+            design: printDesigns,
             quantity: [1, 2, 3, 4, 5]
         },
-        pricing: {
-            "base": 6
-        }}},
-    {upsert: true}
+        printInventory,
+        {
+            "small": 10,
+            "large": 15
+        }
+    );
+
+    await mergeInventory(
+        "Keychains", {
+            fandom: [
+                { value: "Blue Lock"},
+                { value: "Bunny"},
+                { value: "Demon Slayer"},
+                { value: "Flowers bloom"},
+                { value: "Gachiakuta"},
+                { value: "Limbus Company"},
+                { value: "TBHX"},
+                { value: "Twisted Wonderland"},
+                { value: "Valorant"},
+                { value: "Vocaloid"}
+            ],
+            design: keychainDesigns,
+            quantity: [1, 2, 3, 4, 5]
+        },
+        keychainInventory,
+        {
+            "base": 12
+        }
     );
     
-    await ProductModel.findOneAndUpdate({
-        name: "Foil Pins"},{
-        $set: {fields: {
+    await mergeInventory(
+        "Sticker Sheet",{
+            fandom: [
+                { value: "Chiiawaka" },
+                { value: "Hypnosis Mic"},
+                { value: "Miffy"}],
+            design: stickerSheetDesigns,
+            quantity: [1, 2, 3, 4, 5]
+        },
+        stickerSheetInventory,
+        {
+            "base": 6
+        }
+    );
+    
+    await mergeInventory(
+        "Heart Pins",{
+            fandom: [
+                { value: "LADS"}],
+            design: heartPinDesigns,
+            quantity: [1, 2, 3, 4, 5]
+        },
+        heartPinInventory,
+        {
+            "base": 6
+        }
+    );
+    
+    await mergeInventory(
+        "Foil Pins",{
             fandom: [
                 {value: "Deltarune"}
             ],
-            design: [
-                { value: "Kris", dependsOn: { fandom: "Deltarune"}},
-                { value: "Susie", dependsOn: { fandom: "Deltarune"}},
-                { value: "Ralsei", dependsOn: { fandom: "Deltarune"}},],
+            design: foilPinsDesigns,
             quantity: [1, 2, 3, 4, 5]
         },
-        pricing: {
+        foilPinsInventory,
+        {
             "base": 8
-        }}},
-    {upsert: true}
+        }
     );
     
-    await ProductModel.findOneAndUpdate({
-        name: "Standees"},{
-        $set: {fields: {
+    await mergeInventory(
+        "Standees",{
             fandom: [
                 { value: "Limbus Company"}
                 ],
-            design: [
-                {value: "big 3 don", dependsOn: { fandom: "Limbus Company"}}
-            ],
+            design: standeeDesigns,
             quantity: [1, 2, 3, 4, 5]
         },
-        pricing: {
-            "base": 15
-        }}},
-    {upsert: true}
+        standeeInventory,
+        {
+            "base": 45
+        }
+    );
+
+    await mergeInventory(
+        "Plushies",{
+            fandom: [
+                { value: "Library of Ruina"},
+                { value: "Hypnosis Mic"}
+                ],
+            design: plushieDesigns,
+            quantity: [1, 2, 3, 4, 5]
+        },
+        plushieInventory,
+        {
+            "base": 40
+        }
     );
 
     res.send("Seeded");
 });
+
+app.get("reset-products", async (req, res) => {
+    await ProductModel.deleteMany({});
+    res.send("All products deleted.");
+})
+
 
 
 //export to sheets
