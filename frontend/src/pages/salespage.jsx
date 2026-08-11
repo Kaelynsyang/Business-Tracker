@@ -24,6 +24,7 @@ function SalesPage() {
     const [deal, setDeal] = useState("");
     const [products, setProducts] = useState([]);
     const [discount, setDiscount] = useState(0);
+    const [event, setEvent] = useState("");
     const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5001";
     
     useEffect(() => {
@@ -85,16 +86,17 @@ function SalesPage() {
                     items: order,
                     subtotal,
                     discount,
+                    deal,   //here?
                     total,
                     paymentMethod,
-                    discount
+                    event
                 })
             }
         )
 
         const savedOrder = await response.json();
 
-        setOrders([savedOrder, ...orders]);
+        setOrders(prev => [savedOrder, ...prev]);
         setOrder([]);
     }
 
@@ -181,7 +183,7 @@ function SalesPage() {
                         return !selectedOption[field] || selectedOption[field] === value;
                     });
                 });
-
+                /*
                 if (visibleOptions.length === 0) {
                     return (
                         <div key={fieldName}>
@@ -194,10 +196,11 @@ function SalesPage() {
                         </div>
                     );
                 }
+                */
 
                 return (
                     <div key={fieldName}>
-                        <h3>{fieldName}</h3>
+                        {visibleOptions.length > 0 && (<h3>{fieldName}</h3>)}
                         {visibleOptions.map((option) => {
                             const value = option.value;
 
@@ -276,14 +279,24 @@ function SalesPage() {
         >Gatcha</button>
 
         <button
+        onClick={() => {setDiscount(0), setDeal("Gatcha Guarentee")}}
+        className={deal === "Gatcha Guarentee" ? "selected" : ""}
+        >Gatcha Guarentee</button>
+
+        <button
         onClick={() => {setDiscount(3), setDeal("3 for 15 Sticker Sheet")}}
         className={deal === "3 for 15 Sticker Sheet" ? "selected" : ""}
-        >Sticker Sheet</button>
+        >3 for 15 Sticker Sheet</button>
 
         <button
         onClick={() => {setDiscount(3), setDeal("3 for 15 Heart pins")}}
         className={deal === "3 for 15 Heart pins" ? "selected" : ""}
         >3 for 15 Heart pins</button>
+
+        <button
+        onClick={() => {setDiscount(5), setDeal("2 for 75 plushies")}}
+        className={deal === "2 for 75 plushies" ? "selected" : ""}
+        >2 for 35 plushies</button>
 
         <h3>Payment Method</h3>
 
@@ -301,6 +314,26 @@ function SalesPage() {
         onClick={() => setPaymentMethod("Zelle")}
         className={paymentMethod === "Zelle" ? "selected" : ""}
         >Zelle</button>
+
+
+        <h3>Event</h3>
+        
+        <button
+        onClick={() => setEvent("anime night market sep 26")}
+        className={event === "anime night market sep 26" ? "selected" : ""}
+        >anime night market sep 26</button>
+        
+        <button
+        onClick={() => setEvent("anime night market june 26")}
+        className={event === "anime night market june 26" ? "selected" : ""}
+        >anime night market june 26</button>
+        
+        <button
+        onClick={() => setEvent("TGEX 26")}
+        className={event === "TGEX 26" ? "selected" : ""}
+        >TGEX 26</button>
+
+
         <h2>Subtotal: ${subtotal}</h2>
         <h3>Complete Order</h3>
         <button onClick={checkout}>Checkout</button>
@@ -311,7 +344,7 @@ function SalesPage() {
             {orders.map((order) => (
                 <div key={order._id} className="order">
                     <h4>Order #{order._id}</h4>
-                    <p>Total: ${order.total} | Payment: {order.paymentMethod} | Deal: {order.deal} | Date: {new Date(order.createdAt).toLocaleString()}</p>
+                    <p>Total: ${order.total} | Payment: {order.paymentMethod} | Deal: {order.deal} | Event: {order.event} | Date: {new Date(order.createdAt).toLocaleString()}</p>
                     <ul>
                         {order.items?.map((item, index) => (
                             <li key={`${order._id}-${index}`}>

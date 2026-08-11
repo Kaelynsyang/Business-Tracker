@@ -1,26 +1,191 @@
 import '../index.css'
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 function Homepage(){
     const API_URL = import.meta.env.VITE_API_URL;
     const [stickers, setStickers] = useState(0);
+    const [stats, setStats] = useState({});
+    const [dropDown, setDropDown] = useState("");
+    const [fieldChoice, setFieldChoice] = useState(null);
+    const [selectedEvent, setSelectedEvent] = useState("");
+    const [selectedFandom, setSelectedFandom] = useState("");
+    const [products, setProducts] = useState([]);
+    const [logs, setLogs] = useState([]);
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            const params = new URLSearchParams();
+            if (selectedEvent) params.set("event", selectedEvent);
+            if (selectedFandom) params.set("fandom", selectedFandom)
+
+            const res = await fetch(`${API_URL}/homepage?${params.toString()}`);
+            const data = await res.json();
+
+            setStats(data);
+        };
+
+        fetchStats();
+    }, [selectedEvent, selectedFandom])
+
+    useEffect(() => {
+        fetch(`${API_URL}/products`)
+        .then(res => res.json())
+        .then(data => setProducts(data))
+    } , [])
+
+    useEffect(() => {
+        fetch(`${API_URL}/inventory-logs`)
+        .then(res => res.json())
+        .then(data => setLogs(data))
+    }, [])
+
+
+    const filteredProducts = products.filter(
+        product => product.name === fieldChoice
+    )
+
+    const fields = ["Stickers", "Prints", "Keychains", "Sticker Sheet", "Heart Pins", "Foil Pins", "Standees", "Fandom", "Event"] //THIS IS HARD CODED
+    
+    function RegularSection({products, stats}) {
+        return (
+            <div>
+                {products.map(product => {
+                    return(
+                        <div key={product.name}>{product.fields.design.map(design => {
+                            const statsDetails = stats.hashMapDetails[design.value];
+                                
+                            return (
+                                <div key={design.value}>{design.value} | All-time Stock: {statsDetails?.allTimeStock ?? 0}| Total Sold: {statsDetails?.totalSold ?? 0}</div>
+                            )})}
+                        </div>
+                    )
+                })} 
+            </div>
+        )
+    }
+    
+    function FandomSection() {
+        return (
+            <div>
+                {[...new Set(stats.fandoms)].map(fandom => {
+                    return (
+                        <button key={fandom} onClick={() => setSelectedFandom(fandom)}>{fandom}</button>
+                        )
+                })}
+                {selectedFandom && (
+                    <div>
+                        {products.map(product => {
+                             const filterFandom = stats.fandomResults
+                                .filter(result => result.type === product.name)
+                                .reduce((total, result) => total + result.amountSold, 0)
+
+                            return (
+                                    <div key={product._id}>{product.name} | Amount Sold: {filterFandom}</div>
+                                )
+                        })}
+
+                        <h4>All Products</h4>
+                            {stats.fandomResults.map((product) => {
+                                return (
+                                    <div key={`${product.type}-${product.design}`}>{product.type} | {product.design} | Amount sold: {product.amountSold}</div>
+                                )
+                            })}
+                    </div>
+                )}
+            </div>
+        )
+    }               
+
+    function EventSection() {
+        return (
+            <div>
+                <button onClick={() => setSelectedEvent("anime night market sep 26")}>anime night market sep 26</button>
+                <button onClick={() => setSelectedEvent("anime night market june 26")}>anime night market june 26</button>
+                <button onClick={() => setSelectedEvent("TGEX 26")}>TGEX 26</button>
+
+                {selectedEvent && (
+                    <div>
+                        {products.map(product => {
+                            const filterProduct = stats.eventResults
+                                .filter(result => result.type === product.name)
+                                .reduce((total, result) => total + result.amountSold, 0)
+
+                            return (
+                                    <div key={product._id}>{product.name} | Amount Sold: {filterProduct}</div>
+                                )
+                            })}
+                    <h4>All Products</h4>
+                        {stats.eventResults.map((product) => {
+                            return (
+                                <div key={`${product.type}-${product.design}`}>{product.design} | Amount sold this event: {product.amountSold}</div>
+                            )
+                        })}
+                    </div>
+                    )
+                }
+                    </div>
+                )
+            }
+
     return(
         <div>
-            <div className="home">
-            <div>
-                <h1>SalesTracker</h1>
+            <div className="homepage">
+                <h1>Dashboard</h1>
+            <div className="dashboard">
+                <p>
+                    Best Seller: <br/>
+                    1st {stats.topSeller} at {stats.topSellerCount}<br/>
+                    2nd {stats.secondSeller} at {stats.secondSellerCount}<br/> 
+                    3rd {stats.thirdSeller} at {stats.thirdSellerCount}<br/> <br/>
+                    Best Type/Category: <br/>
+                    1st {stats.topType} at {stats.topTypeCount}<br/> 
+                    2nd {stats.secondType} at {stats.secondTypeCount}<br/> 
+                    3rd {stats.thirdType} at {stats.thirdTypeCount}<br/> <br/>
+                    Top Fandom: <br/>
+                    1st {stats.topFandom} at {stats.topFandomCount}<br/> 
+                    2nd {stats.secondFandom} at {stats.secondFandomCount}<br/> 
+                    3rd {stats.thirdFandom} at {stats.thirdFandomCount}<br/> <br/>
+                    Best Deal: {stats.topDeal} at {stats.topDealCount}<br/> 
+                    Best Event: {stats.topEvent} at ${stats.topEventCount}<br/>
+                    Preferred Payment: {stats.topPayment} at {stats.topPaymentCount}<br/>
+                    Total Items Sold: {stats.totalItemSoldCount}<br/>
+                    Net Profit:  <br/>
+                    Expenses: 
+                </p>
+            </div>
+
+            <div className="detailsSection">
+                <h2>Details</h2>
+                    {fields.map((field, index) => (
+                        <button 
+                        key={index}
+                        onClick={() => setFieldChoice(field)}
+                        >{field}</button>
+                    ))}
+                    {fieldChoice && (
+                        <div className="popup">
+                            <h3>{fieldChoice}</h3>
+
+                            {fieldChoice === "Fandom" ? (
+                                <FandomSection/>
+                            ) : fieldChoice === "Event" ? (
+                                <EventSection/>
+                            ) : (
+                                <RegularSection products={filteredProducts} stats={stats}/>
+                            )}
+                            
+                        </div>
+                    )}
             </div>
             <div className='buttons'>
+                <button>Import CSV</button>
                 <button
                     onClick={() =>
                     window.open(
                         `${API_URL}/export-orders`,
                         "_blank"
                     )
-                }
->
-    Export CSV
-</button>
+                }>Export CSV</button>
             </div>
             </div>
         </div>
