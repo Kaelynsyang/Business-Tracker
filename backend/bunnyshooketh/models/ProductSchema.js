@@ -1,6 +1,17 @@
 const mongoose = require("mongoose");
 const OptionSchema = require("./OptionSchema");
 
+const InventorySchema = new mongoose.Schema({
+    design: String,
+    size: String,
+    stock: {
+        type: Number,
+        default: 0
+    }
+    },
+    { _id: false}
+);
+
 const ProductSchema = new mongoose.Schema({
     name: String,
 
@@ -10,6 +21,8 @@ const ProductSchema = new mongoose.Schema({
         fandom: [OptionSchema],
         quantity: [Number]
     },
+
+    inventory: [InventorySchema],
 
     pricing: {
         type: Map,
