@@ -21,11 +21,55 @@ function SalesPage() {
     const [selectedSize, setSelectedSize] = useState([]);
     const [quantity, setQuantity] = useState(1);
     const [paymentMethod, setPaymentMethod] = useState("");
-    const [deal, setDeal] = useState("");
+    //const [deal, setDeal] = useState([]);
+    const [selectedDeals, setSelectedDeals] = useState([]);
     const [products, setProducts] = useState([]);
-    const [discount, setDiscount] = useState(0);
     const [event, setEvent] = useState("");
     const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5001";
+
+    const deals = [
+        { 
+            name: "None",
+            discount: 0 }, 
+        { 
+            name: "2 for $22 keychains",
+            discount: 3 }, 
+        { 
+            name: "3 for $40 l prints",
+            discount: 5 }, 
+        { 
+            name: "3 for $25 s prints",
+            discount: 5 }, 
+        { 
+            name: "3 stickers for 8",
+            discount: 1 }, 
+        { 
+            name: "Gacha",
+            discount: 4 }, 
+        { 
+            name: "Gacha Guarentee",
+            discount: 0 }, 
+        { 
+            name: "3 for $15 Sticker Sheet",
+            discount: 3 }, 
+        { 
+            name: "3 for $15 Heart pins",
+            discount: 3 }, 
+        { 
+            name: "3 for $20 Foil pins",
+            discount: 4 }, 
+        { 
+            name: "2 for $75 plushies",
+            discount: 5 }
+    ]
+
+    const events = [
+        "TGEX 26",
+        "AIOC 26",
+        "ASD 26",
+        "ANM SEP 26", 
+        "ANM JUN 26"
+    ]
     
     useEffect(() => {
     fetch(`${API_URL}/orders`)
@@ -45,6 +89,21 @@ function SalesPage() {
             setOrders([]);
         });
     }, []);
+
+    const toggleDeal = (deal) => {
+        setSelectedDeals((currentDeals) => {
+            const selected = currentDeals.some(
+                (selectedDeal) => selectedDeal.name === deal.name
+            )
+
+            if (selected) {
+                return currentDeals.filter(
+                    (selectedDeal) => selectedDeal.name !== deal.name
+                )
+            }
+            return [...currentDeals, deal ]
+        });
+    };
     
     const adjustProduct = (productName) => {
         setSelectedProduct(productName);
@@ -85,8 +144,8 @@ function SalesPage() {
                 body: JSON.stringify({
                     items: order,
                     subtotal,
-                    discount,
-                    deal,   //here?
+                    //discount,
+                    deals: selectedDeals,   //here?
                     total,
                     paymentMethod,
                     event
@@ -145,8 +204,8 @@ function SalesPage() {
         : [];
 
     const subtotal = order.reduce((sum, item) => sum + item.lineTotal, 0);
-
-    const total = Math.max(subtotal - discount, 0);
+    const totalDiscount = selectedDeals.reduce((total, deal) => total + deal.discount, 0)
+    const total = Math.max(subtotal - totalDiscount, 0);
 
 
     return (
@@ -252,51 +311,11 @@ function SalesPage() {
             </ul>
         <h3>Deals</h3>
 
-        <button
-        onClick={() => {setDiscount(0), setDeal("None")}}
-        className={deal === "None" ? "selected" : ""}
-        >None</button>
-
-        <button
-        onClick={() => {setDiscount(5), setDeal("3 for $40 L prints")}}
-        className={deal === "3 for $40 L prints" ? "selected" : ""}
-        >3 for $40 l prints</button>
-
-        <button
-        onClick={() => {setDiscount(5), setDeal("3 for $25 S prints")}}
-        className={deal === "3 for $25 S prints" ? "selected" : ""}
-        >3 for $25 s prints</button>
-
-        <button
-        onClick={() => {setDiscount(1), setDeal("3 for 8 stickers")}}
-        className={deal === "3 for 8 stickers" ? "selected" : ""}
-        >
-        3 stickers for 8</button>
-
-        <button
-        onClick={() => {setDiscount(4), setDeal("Gatcha")}}
-        className={deal === "Gatcha" ? "selected" : ""}
-        >Gatcha</button>
-
-        <button
-        onClick={() => {setDiscount(0), setDeal("Gatcha Guarentee")}}
-        className={deal === "Gatcha Guarentee" ? "selected" : ""}
-        >Gatcha Guarentee</button>
-
-        <button
-        onClick={() => {setDiscount(3), setDeal("3 for 15 Sticker Sheet")}}
-        className={deal === "3 for 15 Sticker Sheet" ? "selected" : ""}
-        >3 for 15 Sticker Sheet</button>
-
-        <button
-        onClick={() => {setDiscount(3), setDeal("3 for 15 Heart pins")}}
-        className={deal === "3 for 15 Heart pins" ? "selected" : ""}
-        >3 for 15 Heart pins</button>
-
-        <button
-        onClick={() => {setDiscount(5), setDeal("2 for 75 plushies")}}
-        className={deal === "2 for 75 plushies" ? "selected" : ""}
-        >2 for 35 plushies</button>
+        {deals.map((deal) => (
+            <button key={deal.name} onClick={() => toggleDeal(deal)} 
+            className={selectedDeals.some((selectedDeal) => selectedDeal.name === deal.name) ? "selected" : ""}>
+                {deal.name}</button>
+        ))}
 
         <h3>Payment Method</h3>
 
@@ -317,24 +336,17 @@ function SalesPage() {
 
 
         <h3>Event</h3>
-        
-        <button
-        onClick={() => setEvent("anime night market sep 26")}
-        className={event === "anime night market sep 26" ? "selected" : ""}
-        >anime night market sep 26</button>
-        
-        <button
-        onClick={() => setEvent("anime night market june 26")}
-        className={event === "anime night market june 26" ? "selected" : ""}
-        >anime night market june 26</button>
-        
-        <button
-        onClick={() => setEvent("TGEX 26")}
-        className={event === "TGEX 26" ? "selected" : ""}
-        >TGEX 26</button>
 
+        {events.map((eventMap) => (
+            <button key={eventMap} onClick={() => setEvent(eventMap)} 
+            className={eventMap === event ? "selected" : ""}>
+                {eventMap}</button>
+        ))}
 
-        <h2>Subtotal: ${subtotal}</h2>
+        <h3>Subtotal: ${subtotal}</h3>
+        <h3>Discount: ${totalDiscount}</h3>
+        <h2>Total: ${total}</h2>
+
         <h3>Complete Order</h3>
         <button onClick={checkout}>Checkout</button>
         </div>
@@ -344,7 +356,7 @@ function SalesPage() {
             {orders.map((order) => (
                 <div key={order._id} className="order">
                     <h4>Order #{order._id}</h4>
-                    <p>Total: ${order.total} | Payment: {order.paymentMethod} | Deal: {order.deal} | Event: {order.event} | Date: {new Date(order.createdAt).toLocaleString()}</p>
+                    <p>Total: ${order.total} | Payment: {order.paymentMethod} | Deal: {order.deals?.map(deal => deal.name).join(", ")} | Event: {order.event} | Date: {new Date(order.createdAt).toLocaleString()}</p>
                     <ul>
                         {order.items?.map((item, index) => (
                             <li key={`${order._id}-${index}`}>

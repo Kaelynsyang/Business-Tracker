@@ -10,7 +10,7 @@ function InventoryPage(){
     const [note, setNote] = useState("");
     const [logs, setLogs] = useState([]);
     const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5001";
-
+    
     useEffect(() => {
         fetch(`${API_URL}/products`)
         .then(res => res.json())
