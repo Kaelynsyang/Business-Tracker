@@ -11,6 +11,7 @@ function Homepage(){
     const [selectedFandom, setSelectedFandom] = useState("");
     const [products, setProducts] = useState([]);
     const [logs, setLogs] = useState([]);
+    const [file, setFile] = useState(null);
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -49,17 +50,18 @@ function Homepage(){
     function RegularSection({products, stats}) {
         return (
             <div>
-                {products.map(product => {
-                    return(
-                        <div key={product.name}>{product.fields.design.map(design => {
-                            const statsDetails = stats.hashMapDetails[design.value];
-                                
-                            return (
-                                <div key={design.value}>{design.value} | All-time Stock: {statsDetails?.allTimeStock ?? 0}| Total Sold: {statsDetails?.totalSold ?? 0}</div>
+                {products.map(product => (
+                        <div key={product.name}>{product.inventory.map(item => {
+                            const statsDetails = stats.hashMapDetails[item.design];
+                        
+                            return(
+                                    <div key={`${item.design}-${item.size}`}>
+                                        {item.design} | {item.size && <>{item.size} |</>} All-time Stock: {statsDetails?.allTimeStock ?? 0}| Total Sold: {statsDetails?.totalSold ?? 0}
+                                    </div>
                             )})}
                         </div>
-                    )
-                })} 
+                    
+                ))} 
             </div>
         )
     }
@@ -78,7 +80,7 @@ function Homepage(){
                              const filterFandom = stats.fandomResults
                                 .filter(result => result.type === product.name)
                                 .reduce((total, result) => total + result.amountSold, 0)
-
+                                
                             return (
                                     <div key={product._id}>{product.name} | Amount Sold: {filterFandom}</div>
                                 )
@@ -87,7 +89,7 @@ function Homepage(){
                         <h4>All Products</h4>
                             {stats.fandomResults.map((product) => {
                                 return (
-                                    <div key={`${product.type}-${product.design}`}>{product.type} | {product.design} | Amount sold: {product.amountSold}</div>
+                                    <div key={`${product.type}-${product.design}`}>{product.type} | {product.design} {product.size && <> | {product.size} </>}| Amount sold: {product.amountSold}</div>
                                 )
                             })}
                     </div>
@@ -117,7 +119,7 @@ function Homepage(){
                     <h4>All Products</h4>
                         {stats.eventResults.map((product) => {
                             return (
-                                <div key={`${product.type}-${product.design}`}>{product.design} | Amount sold this event: {product.amountSold}</div>
+                                <div key={`${product.type}-${product.design}`}>{product.type} | {product.design} {product.size && <> | {product.size} </>}| Amount sold: {product.amountSold}</div>
                             )
                         })}
                     </div>
@@ -127,6 +129,41 @@ function Homepage(){
                 )
             }
 
+
+    const importInventory = async () => {
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const response = await fetch(`${API_URL}/import-inventory`, {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+
+        console.log(data);
+    }
+
+    const importOrders = async () => {
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const response = await fetch(`${API_URL}/import-orders`, {
+            method: "POST",
+            body: formData
+        })
+
+        const data = await response.json();
+
+        console.log(data);
+    }
+
+    console.log(products);
+            
     return(
         <div>
             <div className="homepage">
@@ -178,14 +215,25 @@ function Homepage(){
                     )}
             </div>
             <div className='buttons'>
-                <button>Import CSV</button>
-                <button
-                    onClick={() =>
+                <button onClick={() =>
                     window.open(
                         `${API_URL}/export-orders`,
                         "_blank"
-                    )
-                }>Export CSV</button>
+                    )}>Export Orders (CSV)</button>
+                <button onClick={() =>
+                    window.open(
+                        `${API_URL}/export-inventory-logs`,
+                        "_blank"
+                    )}>Export Inventory Logs(CSV)</button>
+                <button onClick={() =>
+                    window.open(
+                        `${API_URL}/export-inventory`,
+                        "_blank"
+                    )}>Export Inventory</button>
+
+                <input type="file" accept=".csv" onChange={(e) => setFile(e.target.files[0])}/>
+                <button onClick={importInventory}>Import Inventory</button>
+                <button onClick={importOrders}>Import Orders</button>
             </div>
             </div>
         </div>

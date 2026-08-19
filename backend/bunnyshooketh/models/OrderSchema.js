@@ -6,7 +6,10 @@ const OrderSchema = new mongoose.Schema({
         default: Date.now
     },
 
-    deal: String,
+    deals: [{
+        name: String,
+        discount: Number
+    }],
     paymentMethod: String,
     event: String, 
 
