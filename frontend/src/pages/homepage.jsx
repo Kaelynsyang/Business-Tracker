@@ -13,6 +13,14 @@ function Homepage(){
     const [logs, setLogs] = useState([]);
     const [file, setFile] = useState(null);
 
+    const events = [
+        "TGEX 26",
+        "AIOC 26",
+        "ASD 26",
+        "ANM SEP 26", 
+        "ANM JUN 26"
+    ]
+
     useEffect(() => {
         const fetchStats = async () => {
             const params = new URLSearchParams();
@@ -101,9 +109,12 @@ function Homepage(){
     function EventSection() {
         return (
             <div>
-                <button onClick={() => setSelectedEvent("anime night market sep 26")}>anime night market sep 26</button>
-                <button onClick={() => setSelectedEvent("anime night market june 26")}>anime night market june 26</button>
-                <button onClick={() => setSelectedEvent("TGEX 26")}>TGEX 26</button>
+
+                {events.map((eventMap) => (
+                    <button key={eventMap} onClick={() => setSelectedEvent(eventMap)} 
+                    className={eventMap === event ? "selected" : ""}>
+                {eventMap}</button>
+                ))}
 
                 {selectedEvent && (
                     <div>
@@ -119,7 +130,7 @@ function Homepage(){
                     <h4>All Products</h4>
                         {stats.eventResults.map((product) => {
                             return (
-                                <div key={`${product.type}-${product.design}`}>{product.type} | {product.design} {product.size && <> | {product.size} </>}| Amount sold: {product.amountSold}</div>
+                                <div key={`${product.type}-${product.design}-${product?.size}`}>{product.type} | {product.design} {product.size && <> | {product.size} </>}| Amount sold: {product.amountSold}</div>
                             )
                         })}
                     </div>

@@ -229,9 +229,12 @@ app.get("/homepage", async (req, res) => {
             hashMapTopFandom[item.option.fandom] = (hashMapTopFandom[item.option.fandom] || 0) + item.quantity;
             totalItemSoldCount += item.quantity;
         }
-        if (order.deal != "None"){
-            hashMapTopDeal[order.deal] = (hashMapTopDeal[order.deal] || 0) + 1;
-        }
+        order.deals?.forEach(deal => {
+            if (order.deals != "None"){
+                hashMapTopDeal[deal.name] = (hashMapTopDeal[deal.name] || 0) + 1;
+            }
+        })
+        
         hashMapTopEvent[order.event] = (hashMapTopEvent[order.event] || 0) + order.total;
         hashMapTopPayment[order.paymentMethod] = (hashMapTopPayment[order.paymentMethod] || 0) + 1;
     }
