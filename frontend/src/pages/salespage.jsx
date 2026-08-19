@@ -33,7 +33,7 @@ function SalesPage() {
             discount: 0 }, 
         { 
             name: "2 for $22 keychains",
-            discount: 3 }, 
+            discount: 4 }, 
         { 
             name: "3 for $40 l prints",
             discount: 5 }, 
@@ -45,7 +45,7 @@ function SalesPage() {
             discount: 1 }, 
         { 
             name: "Gacha",
-            discount: 4 }, 
+            discount: 5 }, 
         { 
             name: "Gacha Guarentee",
             discount: 0 }, 
@@ -60,7 +60,13 @@ function SalesPage() {
             discount: 4 }, 
         { 
             name: "2 for $75 plushies",
-            discount: 5 }
+            discount: 5 },
+        { 
+            name: "2 for $20 keychains",
+            discount: 6 }, 
+        { 
+            name: "1 for $12 keychains",
+            discount: 1 }
     ]
 
     const events = [
