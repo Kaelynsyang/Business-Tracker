@@ -238,13 +238,13 @@ app.get("/homepage", async (req, res) => {
     
     for (const order of eventOrders) {
         for (const item of order.items){
-            const key = `${item.product}-${item.option.design}`;
+            const key = `${item.product}-${item.option.design}-${item.option.size}`;
             salesByProduct[key] = (salesByProduct[key] || 0) + item.quantity;
         }
     }
 
     for (const item of fandomItems) {
-        const key = `${item.product}-${item.option.design}`;
+        const key = `${item.product}-${item.option.design}-${item.option.size}`;
         salesByFandom[key] = (salesByFandom[key] || 0) + item.quantity;
     }
 
@@ -256,26 +256,36 @@ app.get("/homepage", async (req, res) => {
     const max_topPayment = getTopEntry(hashMapTopPayment);
 
     const eventResults = products.flatMap(product => 
-        product.fields.design.map(design => {
-            const key = `${product.name}-${design.value}`;
-        
-            return {
-                type: product.name,
-                design: design.value,
-                amountSold: salesByProduct[key] || 0
-    }}))
-
+        product.fields.design.flatMap(design => 
+            product.inventory
+            .filter(item => item.design === design.value)
+            .map(item => {
+                const key = `${product.name}-${design.value}-${item.size}`;
+                return {
+                    type: product.name,
+                    design: design.value,
+                    size: item.size,
+                    amountSold: salesByProduct[key] || 0
+                }
+            }))
+    )
+    
     const fandomResults = products.flatMap(product => 
         product.fields.design
         .filter(design => design.dependsOn?.get("fandom") === fandom)
-        .map(design => {
-            const key = `${product.name}-${design.value}`;
-        
-            return {
-                type: product.name,
-                design: design.value,
-                amountSold: salesByFandom[key] || 0
-    }}))
+        .flatMap(design => 
+            product.inventory
+            .filter(item => item.design === design.value)
+            .map(item => {
+                const key = `${product.name}-${design.value}-${item.size}`;
+                return {
+                    type: product.name,
+                    design: design.value,
+                    size: item.size,
+                    amountSold: salesByFandom[key] || 0
+                }
+            }))
+        )
     
     const fandoms = [
         "Blue Lock", "Bunny", "Chiiawaka", "Deltarune", "Demon Slayer", "Flowers bloom", "Gachiakuta", "Genshin Impact", "Hypnosis Mic", "LADS", 
@@ -371,30 +381,34 @@ const stickerInventory = stickerDesigns.map(design => ({
 }))
 
 const printDesigns = [
-                { value: "kris night", dependsOn: { fandom: "Deltarune"}},
-                { value: "kris light", dependsOn: { fandom: "Deltarune"}},
-                { value: "flowers comic", dependsOn: { fandom: "Flowers bloom"}},
-                { value: "Colmbina", dependsOn: { fandom: "Genshin Impact"}},
-                { value: "flins", dependsOn: { fandom: "Genshin Impact"}},
-                { value: "king Xavier", dependsOn: { fandom: "LADS"}},
-                { value: "canto ego ryoshu", dependsOn: { fandom: "Limbus Company"}},
-                { value: "canto honglu", dependsOn: { fandom: "Limbus Company"}},
-                { value: "canto yisang", dependsOn: { fandom: "Limbus Company"}},
-                { value: "faust gallery", dependsOn: { fandom: "Limbus Company"}},
-                { value: "rodya gallery", dependsOn: { fandom: "Limbus Company"}},
-                { value: "honglu gallery", dependsOn: { fandom: "Limbus Company"}},
-                { value: "nezha", dependsOn: { fandom: "Nezha"}},
-                { value: "Wuyang", dependsOn: { fandom: "Overwatch"}},
-                { value: "anran", dependsOn: { fandom: "Overwatch"}},
-                { value: "riddle rapunzel", dependsOn: { fandom: "Twisted Wonderland"}},
-                { value: "Deuce star", dependsOn: { fandom: "Twisted Wonderland"}},
-                { value: "silver knight", dependsOn: { fandom: "Twisted Wonderland"}},
-                { value: "silver rabbit", dependsOn: { fandom: "Twisted Wonderland"}},
-                { value: "idia", dependsOn: { fandom: "Twisted Wonderland"}},
-                { value: "teto", dependsOn: { fandom: "Vocaloid"}}]
+                { value: "kris night", sizes: ["small"], dependsOn: { fandom: "Deltarune"}},
+                { value: "kris light", sizes: ["small"], dependsOn: { fandom: "Deltarune"}},
+                { value: "flowers comic", sizes: ["large"], dependsOn: { fandom: "Flowers bloom"}},
+                { value: "Colmbina", sizes: ["large"],  dependsOn: { fandom: "Genshin Impact"}},
+                { value: "flins", sizes: ["large"],  dependsOn: { fandom: "Genshin Impact"}},
+                { value: "king Xavier", sizes: ["large"], dependsOn: { fandom: "LADS"}},
+                { value: "canto ego ryoshu", sizes: ["small", "large"],  dependsOn: { fandom: "Limbus Company"}},
+                { value: "canto honglu", sizes: ["small", "large"],  dependsOn: { fandom: "Limbus Company"}},
+                { value: "canto ego honglu", sizes: ["small", "large"],  dependsOn: { fandom: "Limbus Company"}},
+                { value: "canto yisang", sizes: ["small", "large"],  dependsOn: { fandom: "Limbus Company"}},
+                { value: "canto ego ishmael", sizes: ["small", "large"],  dependsOn: { fandom: "Limbus Company"}},
+                { value: "faust gallery", sizes: ["small"], dependsOn: { fandom: "Limbus Company"}},
+                { value: "rodya gallery", sizes: ["small"], dependsOn: { fandom: "Limbus Company"}},
+                { value: "honglu gallery", sizes: ["small"], dependsOn: { fandom: "Limbus Company"}},
+                { value: "nezha", sizes: ["large"],  dependsOn: { fandom: "Nezha"}},
+                { value: "Wuyang", sizes: ["small", "large"], dependsOn: { fandom: "Overwatch"}},
+                { value: "anran", sizes: ["small", "large"], dependsOn: { fandom: "Overwatch"}},
+                { value: "bp fairy lifeweaver", sizes: ["small"], dependsOn: { fandom: "Overwatch"}},
+                { value: "riddle rapunzel", sizes: ["small"], dependsOn: { fandom: "Twisted Wonderland"}},
+                { value: "Deuce star", sizes: ["small"], dependsOn: { fandom: "Twisted Wonderland"}},
+                { value: "silver knight", sizes: ["small"], dependsOn: { fandom: "Twisted Wonderland"}},
+                { value: "silver rabbit", sizes: ["small"], dependsOn: { fandom: "Twisted Wonderland"}},
+                { value: "dorm idia", sizes: ["small", "large"], dependsOn: { fandom: "Twisted Wonderland"}},
+                { value: "teto", sizes: ["large"],  dependsOn: { fandom: "Vocaloid"}},
+                { value: "summer outfit miku", sizes: ["small"],  dependsOn: { fandom: "Vocaloid"}}]
 
 const printInventory = printDesigns.flatMap(design => 
-    ["small", "large"].map(size => ({
+    design.sizes.map(size => ({
         design: design.value,
         size,
         stock: 0
@@ -527,7 +541,7 @@ const plushieDesigns = [
                 {value: "Doppo", dependsOn: { fandom: "Hypnosis Mic"}}
             ]
 
-const plushieInventory = standeeDesigns.map(design => ({
+const plushieInventory = plushieDesigns.map(design => ({
     design: design.value,
     stock: 0
 }))
@@ -699,7 +713,7 @@ app.get("/seed-products", async (req, res) => {
         },
         keychainInventory,
         {
-            "base": 12
+            "base": 13
         }
     );
     
@@ -785,23 +799,30 @@ app.get("reset-products", async (req, res) => {
 
 
 //export to sheets
-
 app.get("/export-orders", async (req, res) => {
     const orders = await OrderModel.find();
 
+
     let csv =
-        "Date,Product,Quantity,Payment Method,Deal,Subtotal,Total\n";
+        "Date,Event,Design,Size,Product,Fandom,Quantity,Unit Price,Deal,Payment Method,Subtotal,Total,Note\n";
 
     orders.forEach(order => {
         order.items.forEach(item => {
+            const deals = (order.deals || []).map(deal => `${deal.name} ($${deal.discount} off)`).join(" | ");
             csv +=
-                `${order.createdAt},` +
+                `${(order.createdAt).toLocaleDateString()},` +
+                `${order.event || ""},` +
+                `${item.option.design},` +
+                `${item.option.size || ""},` +
                 `${item.product},` +
+                `${item.option.fandom},` +
                 `${item.quantity},` +
+                `${item.unitPrice},` +
+                `"${deals}",` +
                 `${order.paymentMethod || ""},` +
-                `${order.deal || ""},` +
                 `${order.subtotal || 0},` +
-                `${order.total || 0}\n`;
+                `${order.total || 0},` +
+                `${order._id || ""}\n`;
         });
     });
 
@@ -810,4 +831,333 @@ app.get("/export-orders", async (req, res) => {
     res.send(csv);
 });
 
-//ALWAYS LAST
+app.get("/export-inventory-logs", async (req, res) => {
+    const logs = await InventoryLog.find();
+
+    let csv =
+        "Date,Design,Size,Product,Past,Update,Current,Note\n";
+
+    logs.forEach(log => {
+            csv +=
+                `${(log.createdAt).toLocaleDateString()},` +
+                `${log.design},` +
+                `${log.size || ""},` +
+                `${log.productName},` +
+                `${log.stockBefore || 0},` +
+                `${log.change || 0},` +
+                `${log.stockAfter || 0},` +
+                `${log.note || ""}\n`;
+    });
+
+    res.header("Content-Type", "text/csv");
+    res.attachment("inventoryLogs.csv");
+    res.send(csv);
+});
+
+
+app.get("/export-inventory", async (req, res) => {
+    const products = await ProductModel.find();
+    const inventoryRows = [];
+
+    let csv =
+        "Fandom,Design,Size,Product,Stock,,Products,Sizes,Price\n";
+
+    products.forEach(product => {
+        product.inventory.forEach(inventoryItem => {
+
+            const design = product.fields.design.find(
+                design => design.value === inventoryItem.design
+            );
+
+            const fandom = design?.dependsOn?.get("fandom");
+
+            inventoryRows.push([
+                fandom || "",
+                inventoryItem.design || "",
+                inventoryItem.size || "",
+                product.name || "",
+                inventoryItem.stock ?? ""
+            ])
+        });
+    });
+
+    const productRows = [];
+
+    products.forEach(product => {
+        for (const [size,price] of product.pricing.entries()) {
+            productRows.push([
+                product.name,
+                size,
+                price
+            ])
+        }
+    });
+
+    const rowCount = Math.max(inventoryRows.length, productRows.length);
+
+    for (let i = 0; i < rowCount; i++) {
+        const inventory = inventoryRows[i] || ["", "", "", "", ""];
+        const product = productRows[i] || ["", "", ""];
+
+        csv += [
+            ...inventory,
+            "",
+            ...product
+        ].join(",") + "\n";
+    }
+
+    res.header("Content-Type", "text/csv");
+    res.attachment("inventory.csv");
+    res.send(csv);
+});
+
+
+//import to sheets
+
+const multer = require("multer");
+const { parse } = require("csv-parse/sync");
+
+const upload = multer({
+    storage: multer.memoryStorage()
+});
+
+app.post("/import-inventory", upload.single("file"), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({
+                error: "No CSV file uploaded"
+            });
+        }
+
+        const csv = req.file.buffer.toString("utf-8");
+        
+        const records = parse(csv, {
+            columns: true,
+            skip_empty_lines: true,
+            trim: true
+        })
+
+        console.log(records);
+
+        const errors = [];
+        const products = new Map();
+        let imported = 0;
+
+        for (const row of records) {
+            let product = products.get(row.Product);
+
+            if (!product) {
+                product = await ProductModel.findOne({
+                    name: row.Product
+                })
+
+                if(!product) {
+                    errors.push({
+                        row,
+                        error: `Product not found: ${row.Product}`
+                    });
+                    continue;
+                }
+                products.set(row.Product, product)
+            }
+
+            const current = Number(row.Current);
+            const stock = Number.isNaN(current) ? Number(row.Stock) : current;
+
+            if(!Number.isInteger(stock)) {
+                errors.push({
+                    row,
+                    error: `Invalid stock: ${row.Current}`
+                })
+                continue;
+            }
+            
+            const inventoryItem = product.inventory.find(
+                inv =>
+                    inv.design === row.Design &&
+                    (inv.size || null) === (row.Size || null)
+            );
+
+            if (!inventoryItem) {
+                errors.push({
+                    row,
+                    error: `Inventory item not found`
+                });
+                continue;
+            }
+
+            inventoryItem.fandom = row.Fandom;
+            inventoryItem.stock = stock;
+            imported++;
+        }
+        
+        for (const product of products.values()) {
+                await product.save();
+        }
+
+        res.json({
+            imported,
+            productsUpdated: products.size,
+            errors
+        });
+    } catch (error) {
+        console.log(error);
+
+        res.status(500).json({
+            error: "Failed to import inventory"
+        });
+    }
+});
+
+
+app.post("/import-orders", upload.single("file"), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({
+                error: "No CSV file uploaded"
+            });
+        }
+
+        const csv = req.file.buffer.toString("utf-8");
+
+        const records = parse(csv, {
+            columns: true,
+            skip_empty_lines: true,
+            trim: true
+        })
+
+        console.log(records);
+
+        const errors = [];
+        const orders = new Map();
+        let imported = 0;
+
+        for (const row of records) {
+            const id = row.Note;
+            
+            if (!orders.has(id)) {
+                orders.set(id, []);
+            }
+            orders.get(id).push(row)
+        }
+
+        for (const [orderId, rows] of orders) {
+            const firstRow = rows[0];
+            
+            const dealsArray = [];
+
+            if (firstRow.Deal) {
+                const dealStrings = firstRow.Deal.split(" | ");
+
+                for (const dealString of dealStrings) {
+                    const match = dealString.match(/^(.*?) \(\$(\d+(?:\.\d+)?) off\)$/);
+
+                    if (match) {
+                        dealsArray.push({
+                            name: match[1],
+                            discount: Number(match[2])
+                        });
+                    }
+                }
+            }
+
+            const existingId = await OrderModel.exists({
+                _id: orderId
+            });
+
+            if (existingId) { 
+                errors.push({
+                    row: rows[0],
+                    error: `Order already exists: ${orderId}`
+                });
+
+                continue;
+            }
+
+            const subtot = Number(firstRow.Subtotal);
+            const tot = Number(firstRow.Total);
+
+            if(!Number.isInteger(subtot)) {
+                errors.push({
+                    row: firstRow,
+                    error: `Invalid subtotal: ${firstRow.Subtotal}`
+                })
+                continue;
+            }
+
+            if(!Number.isInteger(tot)) {
+                errors.push({
+                    row: firstRow,
+                    error: `Invalid total: ${firstRow.Total}`
+                })
+                continue;
+            }
+
+            const items = [];
+
+            for (const row of rows) {
+                const quantity = Number(row.Quantity);
+                const unitPrice = Number(row["Unit Price"]);
+                const deals = row.Deal;
+
+                if(!Number.isInteger(quantity)) {
+                    errors.push({
+                        row,
+                        error: `Invalid quantity: ${row.quantity}`
+                    })
+                    continue;
+                }
+
+                if(!Number.isFinite(unitPrice)) {
+                    errors.push({
+                        row,
+                        error: `Invalid unitPrice: ${row.unitPrice}`
+                    })
+                    continue;
+                }
+                
+                items.push({
+                    product: row.Product,
+
+                    option: {
+                        design: row.Design,
+                        fandom: row.Fandom,
+                        size: row.Size || undefined
+                    },
+
+                    quantity,
+                    unitPrice,
+                    total: unitPrice * quantity
+                })
+                
+            }
+
+
+            const order = new OrderModel({
+                _id: orderId,
+                createdAt: firstRow.Date,
+                deals: dealsArray,
+                event: firstRow.Event,
+                items,
+                subtotal: subtot,
+                total: tot,
+                paymentMethod: firstRow["Payment Method"]
+            })
+
+            await order.save();
+            imported++;
+        }
+
+        res.json({
+            imported,
+            errors
+        })
+
+    } catch (error) {
+        console.log(error);
+
+        res.status(500).json({
+            error: "Failed to import orders"
+        })
+    }
+})
