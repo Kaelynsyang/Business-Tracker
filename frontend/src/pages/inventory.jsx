@@ -112,7 +112,7 @@ function InventoryPage(){
 
                 {showPopup && (
                     <div className="overlay">
-                    <div className="popup">
+                    <div className="popupInventory">
                         <h2>Adjust Stock</h2>
                         <p>{selectedItem?.product.name} | {selectedItem?.inventory.design} 
                             {selectedItem?.inventory.size && <>| {selectedItem?.inventory.size}</>}</p>
