@@ -294,8 +294,8 @@ app.get("/homepage", async (req, res) => {
         )
     
     const fandoms = [
-        "Blue Lock", "Bunny", "Chiiawaka", "Deltarune", "Demon Slayer", "Flowers bloom", "Gachiakuta", "Genshin Impact", "Hypnosis Mic", "LADS", 
-        "Kpop DH", "Limbus Company", "Library of Ruina", "Miffy", "Nezha", "Overwatch", "TBHX", "Twisted Wonderland", "Valorant", "Vocaloid" 
+        "Blue Lock", "Bunny", "Chiiawaka", "Deltarune", "Demon Slayer", "Flowers bloom", "Gachiakuta", "Genshin Impact", "Hypnosis Mic", 
+        "Kpop DH",  "LADS", "Limbus Company", "Library of Ruina", "Miffy", "Nezha", "Overwatch", "Rally Leftovers", "TBHX", "Twisted Wonderland", "Valorant", "Vocaloid" 
     ];
 
     res.json({ //Clean this up later
