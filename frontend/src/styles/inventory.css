@@ -1,0 +1,108 @@
+#inventory {
+    width: 100%;
+}
+
+.displayinv {
+    padding: 0 2% 0 2%;
+    overflow: hidden;
+}
+
+.displayinv h3 {
+    padding: 2% 0 2% 0;
+}
+
+.displayinv ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(400px, 100%), 1fr));
+    gap: 0px 10px;
+    box-shadow: 4px 4px 10px 0px rgba(0, 0, 0, 0.1);
+    background-color: #f9f1e6;
+    border-radius: 20px;
+    margin: 0;
+    padding: 2% 0 20px 2%;
+}
+
+.displayinv li {
+    display: flex;
+    background-color: #f9f1e6;
+    font-size: 24px;
+    padding: 10px 20px 10px 10px;
+
+    border-right: 1px solid #aaaaaa;
+    margin-right: -1px;
+}
+
+.displayinv button {
+    padding: 8px 4px 8px 4px;
+    margin: 0 0 0 12px;
+    font-family: Hind Guntur;
+    line-height: 1.3;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    transition-duration: 0.4s;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9998;
+}
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    width: 90%;
+    max-width: 500px;
+    min-width: 280px;
+    padding: 20px;
+    background-color: #e0bb58;
+}
+
+.buttonMenu {
+    display: block;
+    position: relative;
+    left: 64%;
+}
+
+.save:hover {
+    background-color: #2f3269;
+    color: white;
+}
+
+.closePopup:hover {
+    background-color: #8a0708;
+    color: white;
+}
+
+.popup p {
+    margin: 0;
+    color: #050315;
+}
+
+.popup h2 {
+    color: #050315;
+    margin: 0;
+}
+
+.popupinput {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 24px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #ffffff;
+    box-sizing: border-box;
+}
+
+.popupinput:focus {
+  border-color: #2f3269;
+  outline: none;
+  background-color: #fdfdfd;
+}

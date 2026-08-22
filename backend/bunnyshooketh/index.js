@@ -195,6 +195,7 @@ app.get("/homepage", async (req, res) => {
     
     const salesByProduct = {};
     const salesByFandom = {};
+    let eventRevenue = 0;
 
     let totalItemSoldCount = 0;
     
@@ -240,6 +241,8 @@ app.get("/homepage", async (req, res) => {
     }
     
     for (const order of eventOrders) {
+        eventRevenue += order.total;
+
         for (const item of order.items){
             const key = `${item.product}-${item.option.design}-${item.option.size}`;
             salesByProduct[key] = (salesByProduct[key] || 0) + item.quantity;
@@ -323,6 +326,7 @@ app.get("/homepage", async (req, res) => {
         totalItemSoldCount: totalItemSoldCount,
         hashMapDetails: hashMapDetails,
         eventResults: eventResults,
+        eventRevenue,
         fandoms: fandoms,
         fandomResults: fandomResults
     });
@@ -363,7 +367,13 @@ const stickerDesigns = [
                 { value: "purple bunny", dependsOn: { fandom: "Bunny"}},
                 { value: "green bunny", dependsOn: { fandom: "Bunny"}},
                 { value: "white rabbit", dependsOn: { fandom: "Bunny"}},
+                { value: "Strawberry sandwich bunny", dependsOn: { fandom: "Bunny"}},
                 { value: "shinobu", dependsOn: { fandom: "Demon Slayer"}},
+                { value: "Enji", dependsOn: { fandom: "Gachiakuta"}},
+                { value: "zanka", dependsOn: { fandom: "Gachiakuta"}},
+                { value: "riyo", dependsOn: { fandom: "Gachiakuta"}},
+                { value: "rudo ", dependsOn: { fandom: "Gachiakuta"}},
+                { value: "amo", dependsOn: { fandom: "Gachiakuta"}},
                 { value: "Xiao lantern", dependsOn: { fandom: "Genshin Impact"}},
                 { value: "flins", dependsOn: { fandom: "Genshin Impact"}},
                 { value: "Xavier wedding", dependsOn: { fandom: "LADS"}},
@@ -376,6 +386,8 @@ const stickerDesigns = [
                 { value: "Zoey", dependsOn: { fandom: "Kpop DH"}},
                 { value: "mystery", dependsOn: { fandom: "Kpop DH"}},
                 { value: "nezha", dependsOn: { fandom: "Nezha"}},
+                { value: "bp fairy Moira", dependsOn: { fandom: "Overwatch"}},
+                { value: "romance rook stamp", dependsOn: { fandom: "Twisted Wonderland"}},
                 { value: "kaito grape", dependsOn: { fandom: "Vocaloid"}}];
 
 const stickerInventory = stickerDesigns.map(design => ({
@@ -406,6 +418,7 @@ const printDesigns = [
                 { value: "Deuce star", sizes: ["small"], dependsOn: { fandom: "Twisted Wonderland"}},
                 { value: "silver knight", sizes: ["small"], dependsOn: { fandom: "Twisted Wonderland"}},
                 { value: "silver rabbit", sizes: ["small"], dependsOn: { fandom: "Twisted Wonderland"}},
+                { value: "ace new year", sizes: ["small"], dependsOn: { fandom: "Twisted Wonderland"}},
                 { value: "dorm idia", sizes: ["small", "large"], dependsOn: { fandom: "Twisted Wonderland"}},
                 { value: "teto", sizes: ["large"],  dependsOn: { fandom: "Vocaloid"}},
                 { value: "summer outfit miku", sizes: ["small"],  dependsOn: { fandom: "Vocaloid"}}]
