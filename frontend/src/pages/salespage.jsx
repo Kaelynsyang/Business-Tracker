@@ -8,10 +8,8 @@ cash or card
 fandom then design options
 
 */
-
-
 import { useEffect, useState } from "react";
-import "../index.css";
+import "../styles/orders.css";
 
 function SalesPage() {
     const [order, setOrder] = useState([]);
