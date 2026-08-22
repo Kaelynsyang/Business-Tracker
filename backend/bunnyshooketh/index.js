@@ -387,7 +387,7 @@ const stickerDesigns = [
                 { value: "mystery", dependsOn: { fandom: "Kpop DH"}},
                 { value: "nezha", dependsOn: { fandom: "Nezha"}},
                 { value: "bp fairy Moira", dependsOn: { fandom: "Overwatch"}},
-                { value: "romance rook stamp", dependsOn: { fandom: "Twisted Wonderland"}},
+                { value: "rowance rook stamp", dependsOn: { fandom: "Twisted Wonderland"}},
                 { value: "kaito grape", dependsOn: { fandom: "Vocaloid"}}];
 
 const stickerInventory = stickerDesigns.map(design => ({
@@ -419,6 +419,7 @@ const printDesigns = [
                 { value: "silver knight", sizes: ["small"], dependsOn: { fandom: "Twisted Wonderland"}},
                 { value: "silver rabbit", sizes: ["small"], dependsOn: { fandom: "Twisted Wonderland"}},
                 { value: "ace new year", sizes: ["small"], dependsOn: { fandom: "Twisted Wonderland"}},
+                { value: "Rowance Riddle", sizes: ["small"], dependsOn: { fandom: "Twisted Wonderland"}},
                 { value: "dorm idia", sizes: ["small", "large"], dependsOn: { fandom: "Twisted Wonderland"}},
                 { value: "teto", sizes: ["large"],  dependsOn: { fandom: "Vocaloid"}},
                 { value: "summer outfit miku", sizes: ["small"],  dependsOn: { fandom: "Vocaloid"}}]
@@ -505,10 +506,14 @@ const stickerSheetDesigns = [
                 { value: "CW Food", dependsOn: { fandom: "Chiiawaka"}},
                 { value: "CW Emotions", dependsOn: { fandom: "Chiiawaka"}},
                 { value: "CW Study", dependsOn: { fandom: "Chiiawaka"}},
+                { value: "Genshin Xiao Rally", dependsOn: { fandom: "Rally Leftovers"}},
+                { value: "TGEX MATCHA", dependsOn: { fandom: "Rally Leftovers"}},
+                { value: "Trio FlingP", dependsOn: { fandom: "Hypnosis Mic"}},
+                { value: "Trio Materno", dependsOn: { fandom: "Hypnosis Mic"}},
                 { value: "MY Bake", dependsOn: { fandom: "Miffy"}},
                 { value: "MY matcha", dependsOn: { fandom: "Miffy"}},
                 { value: "MY fruit", dependsOn: { fandom: "Miffy"}},
-                { value: "MU Songs", dependsOn: { fandom: "Miffy"}},
+                { value: "MU Songs", dependsOn: { fandom: "Miffy"}}
             ]
 
 const stickerSheetInventory = stickerSheetDesigns.map(design => ({
