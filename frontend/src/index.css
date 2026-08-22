@@ -32,20 +32,20 @@ p {
 h1 {
   font-family: Laila;
   text-align: center;
-  font-size: 72px;
+  font-size: 60px;
   padding: 20px;
   margin: 0;
 }
 
 h2 {
   text-align: center;
-  font-size: 42px;
+  font-size: 40px;
   padding: 20px;
   font-family: Oswald;
 }
 
 h3 {
-  font-size: 42px;
+  font-size: 36px;
   font-family: Oswald;
   margin: 0 0;
 }
@@ -57,7 +57,7 @@ h3 {
 
 button {
   padding: 10px;
-  font-size: 24px;
+  font-size: 20px;
   font-family: Hind Guntur;
   border: 2px solid #ccc;
   border-radius: 8px;

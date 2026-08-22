@@ -25,7 +25,7 @@
 .displayinv li {
     display: flex;
     background-color: #f9f1e6;
-    font-size: 24px;
+    font-size: 20px;
     padding: 10px 20px 10px 10px;
 
     border-right: 1px solid #aaaaaa;
@@ -52,7 +52,7 @@
     z-index: 9998;
 }
 
-.popup {
+.popupInventory {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -65,10 +65,18 @@
     background-color: #e0bb58;
 }
 
+.popupInventory p {
+    margin: 0;
+}
+
+.popupInventory h2 {
+    margin: 0;
+}
+
 .buttonMenu {
     display: block;
     position: relative;
-    left: 64%;
+    left: 68%;
 }
 
 .save:hover {
@@ -94,6 +102,7 @@
 .popupinput {
     width: 100%;
     padding: 12px 16px;
+    margin: 0 0 20px 0;
     font-size: 24px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -105,4 +114,8 @@
   border-color: #2f3269;
   outline: none;
   background-color: #fdfdfd;
+}
+
+.adjustsection p {
+    margin: 0
 }
