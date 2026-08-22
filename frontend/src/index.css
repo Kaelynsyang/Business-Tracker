@@ -1,70 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Hind+Guntur:wght@300;400;500;600;700&family=Laila:wght@300;400;500;600;700&family=Oswald:wght@200..700&display=swap');
+
+* {
+  font-family:Laila, Oswald, Hind Guntur;
+  box-sizing: border-box;
+}
+
 :root{
-  background-color: rgb(198, 233, 198);
-  font-family:Verdana, Geneva, Tahoma, sans-serif;
-  color: black;
+  --blackText: #050315;
+  --bgBeige: #f6e8c5;
+  --redPrimary: #8a0708;
+  --navySecondary: #2f3269;
+  --yellowAccent: #e0bb58;
+
+  background-color: var(--bgBeige);
   width: 100%;
   padding: 0;
   margin: 0;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+html {
+	height: 100%;
 }
 
 p {
   color: black;
   padding: 0px;
+  font-family: Hind Guntur;
+  font-size: 24px;
 }
 
 h1 {
+  font-family: Laila;
   text-align: center;
-  font-size: 4rem;
+  font-size: 72px;
   padding: 20px;
-  padding-top: 70px;
+  margin: 0;
 }
 
 h2 {
   text-align: center;
-  font-size: 2rem;
+  font-size: 42px;
   padding: 20px;
+  font-family: Oswald;
 }
 
-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color:cadetblue;
-  position: fixed;
-  width: 100%;
-}
-
-nav ul {
-  list-style-type: none;
-  overflow: hidden;
-}
-
-nav li {
-  float: left;
-}
-
-nav li a {
-  display: block;
-  color: black;
-  font-size: 25px;
-  padding: 14px 16px;
-  text-decoration: none;
-  border-radius: 0.5rem;
-}
-
-nav li a:hover {
-  background-color: darkgreen;
-}
-
-ul {
-  list-style-type: none;
-  overflow: hidden;
+h3 {
+  font-size: 42px;
+  font-family: Oswald;
+  margin: 0 0;
 }
 
 .selected {
@@ -74,10 +57,16 @@ ul {
 
 button {
   padding: 10px;
-  font-size: 16px;
+  font-size: 24px;
+  font-family: Hind Guntur;
   border: 2px solid #ccc;
   border-radius: 8px;
   transition-duration: 0.4s;
+}
+
+button:hover {
+  background-color: #2f3269;
+  color: white;
 }
 
 .addtocart {

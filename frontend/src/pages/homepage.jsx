@@ -118,10 +118,12 @@ function Homepage(){
 
                 {selectedEvent && (
                     <div>
-                        {products.map(product => {
-                            const filterProduct = stats.eventResults
-                                .filter(result => result.type === product.name)
-                                .reduce((total, result) => total + result.amountSold, 0)
+                        <h4>Event Revenue: ${stats.eventRevenue}</h4>
+                            <div>
+                                {products.map(product => {
+                                    const filterProduct = stats.eventResults
+                                    .filter(result => result.type === product.name)
+                                    .reduce((total, result) => total + result.amountSold, 0)
 
                             return (
                                     <div key={product._id}>{product.name} | Amount Sold: {filterProduct}</div>
@@ -134,6 +136,8 @@ function Homepage(){
                             )
                         })}
                     </div>
+                    </div>
+                    
                     )
                 }
                     </div>
