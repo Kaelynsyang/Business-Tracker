@@ -1,4 +1,4 @@
-import "../index.css";
+import "../styles/inventory.css";
 import { useEffect, useState } from "react";
 
 function InventoryPage(){
@@ -83,8 +83,7 @@ function InventoryPage(){
 
 
     return(
-        <div>
-            <div className="inventory">
+        <div id="inventory">
             <div>
                 <h1>Inventory</h1>
             </div>
@@ -112,26 +111,39 @@ function InventoryPage(){
             </div>
 
                 {showPopup && (
+                    <div className="overlay">
                     <div className="popup">
-                        <h2>Testing</h2>
+                        <h2>Adjust Stock</h2>
                         <p>{selectedItem?.product.name} | {selectedItem?.inventory.design} 
                             {selectedItem?.inventory.size && <>| {selectedItem?.inventory.size}</>}</p>
-                        <p>Current Stock: <br/> {selectedItem?.inventory.stock}</p>
-                        <p>Adjust: </p>
-                        <input
-                            type="number"
-                            value={adjustment}
-                            onChange={(e) => setAdjustment(e.target.value)}
-                        />
-                        <p>Note: </p>
-                        <input
-                            type="string"
-                            value={note}
-                            onChange={(e) => setNote(e.target.value)}
-                        />
-                        <button onClick={() => saveStock()}>Save</button>
-                        <button onClick={() => closePopup()}>X</button>
+                        <p>Current Stock: {selectedItem?.inventory.stock}</p>
+                        <div className="adjustsection">
+                            <p>Adjust: </p>
+                            <input
+                                className="popupinput"
+                                type="number"
+                                value={adjustment}
+                                onChange={(e) => setAdjustment(e.target.value)}
+                            />    
+                        </div>
+                        <div className="notesection">
+                            <p>Note: </p>
+                            <input
+                                className="popupinput"
+                                type="string"
+                                value={note}
+                                onChange={(e) => setNote(e.target.value)}
+                            />
+                        </div>
+                        
+                        
+                        <div className="buttonMenu">
+                            <button className="save" onClick={() => saveStock()}>Save</button>
+                            <button className="closePopup" onClick={() => closePopup()}>Cancel</button>
+                        </div>
                     </div>
+                    </div>
+                    
                 )}
 
             <div className="inventoryLog"></div>
@@ -147,7 +159,6 @@ function InventoryPage(){
                         <p>Note: {log.note}</p>
                     </div>
                 ))}
-            </div>
         </div>
     );
 }
