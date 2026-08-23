@@ -64,7 +64,10 @@ function SalesPage() {
             discount: 6 }, 
         { 
             name: "1 for $12 keychains",
-            discount: 1 }
+            discount: 1 },
+        { 
+            name: "5 for $55 keychains",
+            discount: 10 }
     ]
 
     const events = [
