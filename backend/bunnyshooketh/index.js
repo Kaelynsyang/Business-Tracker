@@ -492,10 +492,11 @@ const keychainDesigns = [
                 { value: "Kaito", dependsOn: { fandom: "Vocaloid"}},
                 { value: "Rin", dependsOn: { fandom: "Vocaloid"}},
                 { value: "Len", dependsOn: { fandom: "Vocaloid"}},
+                { value: "Mekio", dependsOn: { fandom: "Vocaloid"}},
                 { value: "Miku", dependsOn: { fandom: "Vocaloid"}},
                 { value: "Miku cinnamon roll", dependsOn: { fandom: "Vocaloid"}},
                 { value: "full cherry", dependsOn: { fandom: "Vocaloid"}},
-                { value: "full og", dependsOn: { fandom: "Vocaloid"}}]
+                { value: "teto", dependsOn: { fandom: "Vocaloid"}}]
 
 const keychainInventory = keychainDesigns.map(design => ({
     design: design.value,
@@ -743,7 +744,8 @@ app.get("/seed-products", async (req, res) => {
             fandom: [
                 { value: "Chiiawaka" },
                 { value: "Hypnosis Mic"},
-                { value: "Miffy"}],
+                { value: "Miffy"},
+                { value: "Rally Leftovers"}],
             design: stickerSheetDesigns,
             quantity: [1, 2, 3, 4, 5]
         },
