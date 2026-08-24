@@ -198,6 +198,7 @@ function Homepage(){
                     2nd {stats.secondFandom} at {stats.secondFandomCount}<br/> 
                     3rd {stats.thirdFandom} at {stats.thirdFandomCount}<br/> <br/>
                     Best Deal: {stats.topDeal} at {stats.topDealCount}<br/> 
+                    2nd Best Deal: {stats.secondTopDeal} at {stats.secondTopDealCount}<br/> 
                     Best Event: {stats.topEvent} at ${stats.topEventCount}<br/>
                     Preferred Payment: {stats.topPayment} at {stats.topPaymentCount}<br/>
                     Total Items Sold: {stats.totalItemSoldCount}<br/>
