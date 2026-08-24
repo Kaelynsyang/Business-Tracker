@@ -231,7 +231,7 @@ app.get("/homepage", async (req, res) => {
             totalItemSoldCount += item.quantity;
         }
         order.deals?.forEach(deal => {
-            if (order.deals != "None"){
+            if (deal != "None"){
                 hashMapTopDeal[deal.name] = (hashMapTopDeal[deal.name] || 0) + 1;
             }
         })
@@ -317,8 +317,10 @@ app.get("/homepage", async (req, res) => {
         secondFandomCount: max_topFandom?.second ?? null, 
         thirdFandom: max_topFandom?.thirdKey ?? null, 
         thirdFandomCount: max_topFandom?.third ?? null,
-        topDeal: max_topDeal?.firstKey ?? null, 
+        topDeal: max_topDeal?.firstKey ?? null,  //CHANGE TO FIRSTKEY WHEN RESET ALL ORDERS
         topDealCount: max_topDeal?.first ?? null, 
+        secondTopDeal: max_topDeal?.secondKey ?? null,  //CHANGE
+        secondTopDealCount: max_topDeal?.second ?? null, 
         topEvent: max_topEvent?.firstKey ?? null, 
         topEventCount: max_topEvent?.first ?? null, 
         topPayment: max_topPayment?.firstKey ?? null,
@@ -410,6 +412,7 @@ const printDesigns = [
                 { value: "faust gallery", sizes: ["small"], dependsOn: { fandom: "Limbus Company"}},
                 { value: "rodya gallery", sizes: ["small"], dependsOn: { fandom: "Limbus Company"}},
                 { value: "honglu gallery", sizes: ["small"], dependsOn: { fandom: "Limbus Company"}},
+                { value: "bad end id honglu", sizes: ["small"], dependsOn: { fandom: "Limbus Company"}},
                 { value: "nezha", sizes: ["large"],  dependsOn: { fandom: "Nezha"}},
                 { value: "Wuyang", sizes: ["small", "large"], dependsOn: { fandom: "Overwatch"}},
                 { value: "anran", sizes: ["small", "large"], dependsOn: { fandom: "Overwatch"}},
@@ -494,6 +497,7 @@ const keychainDesigns = [
                 { value: "Len", dependsOn: { fandom: "Vocaloid"}},
                 { value: "Mekio", dependsOn: { fandom: "Vocaloid"}},
                 { value: "Miku", dependsOn: { fandom: "Vocaloid"}},
+                { value: "Miku full body", dependsOn: { fandom: "Vocaloid"}},
                 { value: "Miku cinnamon roll", dependsOn: { fandom: "Vocaloid"}},
                 { value: "full cherry", dependsOn: { fandom: "Vocaloid"}},
                 { value: "teto", dependsOn: { fandom: "Vocaloid"}}]
@@ -677,6 +681,7 @@ app.get("/seed-products", async (req, res) => {
                 { value: "Bunny"},
                 { value: "Demon Slayer"},
                 { value: "Genshin Impact"},
+                { value: "Gachiakuta"},
                 { value: "Hypnosis Mic"},
                 { value: "LADS"},
                 { value: "Limbus Company"},
