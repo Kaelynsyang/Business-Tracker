@@ -121,12 +121,20 @@ function Homepage(){
                         <h4>Event Revenue: ${stats.eventRevenue}</h4>
                             <div>
                                 {products.map(product => {
-                                    const filterProduct = stats.eventResults
+                                    const productResults = stats.eventResults.filter(
+                                        result => result.type === product.name
+                                    );
+                                    console.log(stats.eventResults);
+                                    const filterProduct = productResults
                                     .filter(result => result.type === product.name)
                                     .reduce((total, result) => total + result.amountSold, 0)
+                                    const revenue = productResults.reduce((total, result) => {
+                                        const price = product.pricing?.[result.size] ?? product.pricing?.base ?? 1;
+                                        return total + result.amountSold * price;
+                                    }, 0)
 
                             return (
-                                    <div key={product._id}>{product.name} | Amount Sold: {filterProduct}</div>
+                                    <div key={product._id}>{product.name} | Amount Sold: {filterProduct} | Profit: ${revenue}</div>
                                 )
                             })}
                     <h4>All Products</h4>
@@ -138,11 +146,9 @@ function Homepage(){
                     </div>
                     </div>
                     
-                    )
-                }
+                    )}
                     </div>
-                )
-            }
+                )}
 
 
     const importInventory = async () => {

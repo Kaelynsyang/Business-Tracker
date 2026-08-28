@@ -671,6 +671,28 @@ app.delete("/orders/:id", async (req, res) => {
     }
 })
 
+app.patch("/orders/:id", async (req, res) => {
+    try {
+        const updatedOrder = await OrderModel.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { returnDocument: "after", runValidators: true}
+        );
+
+        if (!updatedOrder) {
+            return res.status(404).json({ error: "Order not found" });
+        }
+
+        res.json(updatedOrder);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            error: err.message
+        });
+    }
+})
+
+
 //Products
 
 app.get("/seed-products", async (req, res) => {
