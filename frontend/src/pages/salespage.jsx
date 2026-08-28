@@ -15,19 +15,22 @@ function SalesPage() {
     const [order, setOrder] = useState([]);
     const [orders, setOrders] = useState([]);
     const [selectedProduct, setSelectedProduct] = useState(null);
-    const [selectedOption, setSelectedOption] = useState({});
+    const [selectedOptions, setSelectedOptions] = useState({});
     const [selectedSize, setSelectedSize] = useState([]);
     const [quantity, setQuantity] = useState(1);
     const [paymentMethod, setPaymentMethod] = useState("");
-    //const [deal, setDeal] = useState([]);
     const [selectedDeals, setSelectedDeals] = useState([]);
     const [products, setProducts] = useState([]);
     const [event, setEvent] = useState("");
+    const [showPopup, setShowPopup] = useState(false);
+    const [orderPopup, setOrderPopup] = useState(null);
+    const [dealInput, setDealInput] = useState("");
+    const [dateTime, setDateTime] = useState("");
+
     const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5001";
 
     const deals = [
-        { 
-            name: "None",
+        {   name: "None",
             discount: 0 }, 
         { 
             name: "2 for $22 keychains",
@@ -108,31 +111,67 @@ function SalesPage() {
                     (selectedDeal) => selectedDeal.name !== deal.name
                 )
             }
-            return [...currentDeals, deal ]
+
+            if (deal.name === "None") {
+                return [deal];
+            }
+
+            const withoutNone = currentDeals.filter(
+                (selectedDeal) => selectedDeal.name !== "None"
+            );
+
+            return [...withoutNone, deal ]
         });
     };
-    
-    const adjustProduct = (productName) => {
-        setSelectedProduct(productName);
-    }
+
+    const toggleOption = (fieldName, option) => {
+        setSelectedOptions((currentOptions) => {
+            const value = option.value;
+
+            if (fieldName === "fandom") {
+                return {
+                    ...currentOptions, fandom: currentOptions.fandom === value ? undefined : value
+                }
+            }
+        
+            const currentValues = currentOptions[fieldName] || [];
+            const selected = currentValues.includes(value);
+        
+            return {
+                ...currentOptions, [fieldName]: selected 
+                ? currentValues.filter((item) !== value)
+                : [...currentValues, value]
+            }
+        })
+    };
 
     const addToCart = () => {
         const unitPrice = selectedProductData?.pricing?.base ??
-                            selectedProductData?.pricing?.[selectedOption?.size] ??
+                            selectedProductData?.pricing?.[selectedOptions?.size] ??
                             0;
+        console.log("selected Options", selectedOptions);
 
-        setOrder([
-            ...order, 
-            {
+        const designs = selectedOptions.design || [];
+        const quantity = Number(selectedOptions.quantity || 1);
+
+        const newOrderItems = designs.map((design) => ({
                 product: selectedProduct,
-                option: selectedOption,
-                quantity: Number(selectedOption.quantity || 1),
+                option: {
+                    fandom: selectedOptions.fandom,
+                    design: design,
+                    ...(selectedOptions.size ? { size: selectedOptions.size } : {})
+                },
+                quantity,
                 unitPrice,
-                lineTotal: unitPrice * Number(selectedOption.quantity || 1)
-            }
+                lineTotal: unitPrice * quantity
+            }))
+
+        setOrder((currentOrder) => [
+            ...currentOrder,
+            ...newOrderItems 
         ]);
         setSelectedProduct(null);
-        setSelectedOption({});
+        setSelectedOptions([]);
         setQuantity(quantity);
     }
 
@@ -179,7 +218,7 @@ function SalesPage() {
     };
 
     useEffect(() => {
-        setSelectedOption({});
+        setSelectedOptions([]);
         setQuantity(1);
     }, [selectedProduct]);
 
@@ -214,6 +253,66 @@ function SalesPage() {
     const totalDiscount = selectedDeals.reduce((total, deal) => total + deal.discount, 0)
     const total = Math.max(subtotal - totalDiscount, 0);
 
+    //Handle adjusting orders and dropdowns
+    const updateField = (fieldName, newValue) => {
+        if (fieldName === 'paymentMethod') setPaymentMethod(newValue);
+        if (fieldName === 'event') setEvent(newValue);
+        if (fieldName === 'date') setDateTime(newValue);
+    }
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        updateField(name, value);
+    }
+    
+    const handleDealChange = (e) => {
+        const value = e.target.value;
+        setDealInput(value);
+        const deal = deals.find((deal) => deal.name === value);
+        if (deal) {
+            toggleDeal(deal);
+            setDealInput("");
+        }
+    }
+
+    const openPopupOrder = (order) => {
+        setShowPopup(true);
+        setOrderPopup(order);
+    }
+
+    const closePopupOrder = () => {
+        setShowPopup(false);
+        setPaymentMethod("");
+        setSelectedDeals([]);
+        setDealInput("");
+        setEvent("");
+    }
+
+    const handleSave = async (id) => {
+        try {
+            const response = await fetch(`${API_URL}/orders/${id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    paymentMethod,
+                    deals: selectedDeals,
+                    event,
+                    createdAt: dateTime
+                })
+            })
+
+            const updatedOrder = await response.json();
+
+            setOrders((currentOrders) => 
+                currentOrders.map((order) => order._id === updatedOrder._id ? updatedOrder : order));
+
+            closePopupOrder();
+        } catch(error) {
+            console.error("Failed to save data: ", error);
+        }
+    }
 
     return (
     <div>
@@ -246,7 +345,7 @@ function SalesPage() {
                 const visibleOptions = normalizedOptions.filter(option => {
                     if (!option.dependsOn) return true;
                     return Object.entries(option.dependsOn).every(([field, value]) => {
-                        return !selectedOption[field] || selectedOption[field] === value;
+                        return !selectedOptions[field] || selectedOptions[field] === value;
                     });
                 });
                 /*
@@ -273,19 +372,12 @@ function SalesPage() {
                             return (
                                 <button
                                     key={value}
-                                    onClick={() =>
-                                        setSelectedOption({
-                                            ...selectedOption,
-                                            [fieldName]: value
-                                        })
-                                    }
-                                    className={
-                                        selectedOption?.[fieldName] === value
-                                            ? "selected"
-                                            : ""
-                                    }
-                                >
-                                    {value}
+                                    onClick={() => toggleOption(fieldName, option)}
+                                    className={fieldName === "fandom" ? selectedOptions.fandom === option.value
+                                        ? "selected" : ""
+                                        : selectedOptions[fieldName]?.includes(option.value) ? "selected" : ""
+                                    }>
+                                    {option.value}
                                 </button>
                             );
                         })}
@@ -307,10 +399,7 @@ function SalesPage() {
                         {item.option?.size && `${item.option.size} - `}
                         {item.option?.design && `${item.option.design} - `}
                         x{item.quantity} {" | "}
-                        {Object.entries(item.option).map(([key, value]) => (
-                            <span key={key}>
-                                {key}: {value}{" | "}
-                            </span>))}
+                        {"Fandom"}: {item.option?.fandom} {" | "}
                         ${item.unitPrice} {" | Total: $"}
                         {item.lineTotal}
                     </li>
@@ -363,6 +452,7 @@ function SalesPage() {
             {orders.map((order) => (
                 <div key={order._id} className="order">
                     <h4>Order #{order._id}</h4>
+                    <button onClick={() => openPopupOrder(order)}>Edit</button>
                     <p>Total: ${order.total} | Payment: {order.paymentMethod} | Deal: {order.deals?.map(deal => deal.name).join(", ")} | Event: {order.event} | Date: {new Date(order.createdAt).toLocaleString()}</p>
                     <ul>
                         {order.items?.map((item, index) => (
@@ -381,6 +471,61 @@ function SalesPage() {
                 </div>   
             ))}
         </div>
+
+        {showPopup && (
+            <div className="popupOrders">
+            <form>
+                <h2>Adjust Order</h2>
+                <p>Order ID: #{orderPopup._id}</p>
+
+                <label htmlFor="paymentInput">Payment: </label>
+                <input type="text" id="paymentInput" name="paymentMethod" list="paymentMethod-options" value={paymentMethod}
+                onChange={handleChange} placeholder={orderPopup.paymentMethod}/>
+                <datalist id="paymentMethod-options">
+                    <option value="Cash" />
+                    <option value="Card" />
+                    <option value="Zelle" />
+                </datalist>
+
+                <label htmlFor="dealsInput"> <br/> Deal(s): </label>
+                <input type="text" id="dealsInput" name="selectedDeals" list="selectedDeals-options" value={dealInput}
+                 onChange={handleDealChange} placeholder={orderPopup.deals?.map(deal => deal.name).join(", ")}/>
+                <datalist id="selectedDeals-options">
+                    {deals.map(deal => (
+                        <option key={deal.name} value={deal.name}/>
+                    ))}
+                </datalist>
+                <div>
+                {selectedDeals.map((deal) => (
+                    <span key={deal.name}>
+                        {deal.name}
+                            <button type="button" onClick={() => toggleDeal(deal)}>x</button>
+                    </span>
+                ))}
+                </div>
+
+                <label htmlFor="eventInput"> <br/> Event: </label>
+                <input type="text" id="eventInput" name="event" list="event-options" value={event}
+                 onChange={handleChange} placeholder={orderPopup.event}/>
+                <datalist id="event-options">
+                    {events.map(event => (
+                        <option key={event} value={event}/>
+                    ))}
+                </datalist>
+                    
+                <label htmlFor="dateInput"> <br/> Date and Time: </label>
+                <input type="datetime-local" id="dateInput" name="date" list="date-options" value={dateTime}
+                 onChange={handleChange}/>
+            </form>
+                <p>Date: {new Date(orderPopup.createdAt).toLocaleString()}</p>
+        
+                <div className="buttonMenu">
+                    <button className="save" onClick={() => handleSave(orderPopup._id)}>Save</button>
+                    <button className="closePopup" onClick={() => closePopupOrder()}>Cancel</button>
+                </div>
+            </div>
+        )}
+        
     </div>
   );
 }
