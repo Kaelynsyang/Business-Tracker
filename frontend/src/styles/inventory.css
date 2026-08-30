@@ -3,7 +3,7 @@
 }
 
 .displayinv {
-    padding: 0 2% 0 2%;
+    padding: 0 2% 2% 2%;
     overflow: hidden;
 }
 
@@ -113,9 +113,70 @@
 .popupinput:focus {
   border-color: #2f3269;
   outline: none;
-  background-color: #fdfdfd;
+  background-color: #ccc;
 }
 
 .adjustsection p {
     margin: 0
+}
+
+.inventoryLogs {
+    /*adjustsection: 2% 0 20px 2%;*/
+    padding: 10px 10px 20px 10px;
+    margin: 0 2% 0 2%;
+}
+
+.deleteButton {
+    margin: auto;
+    padding: 5px;
+}
+
+.deleteButton:hover {
+    background-color: #8a0708;
+}
+
+.inventoryTable {
+    background-color: #2f3269;
+    color:#ccc;
+    --columns: 0.5fr 0.5fr 0.5fr 0.3fr 0.3fr 0.3fr 1fr 1fr 0.2fr;
+    text-align: center;
+    border-radius: 20px;
+    overflow-y: auto;
+    max-height: 800px;
+    
+    scrollbar-color: #aaaaaa #2f3269;
+}
+
+.inventoryHeader {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: grid;
+    grid-template-columns: var(--columns);
+    padding: 20px;
+    border-bottom: 0.5px solid #aaaaaa;
+    background-color: #2f3269;
+    font-family: Oswald;
+    font-size: 20px;
+    font-weight: 500;
+    
+    box-shadow: 0 1px 0 rgba(255,255,255,.12);
+}
+
+.inventoryBody > div {
+    display: grid;
+    grid-template-columns: var(--columns);
+    
+    padding: 20px;
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.20);
+}
+
+.inventoryHeader > div,
+.inventoryBody > div > div {
+    box-sizing: border-box;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    vertical-align: middle;
 }
