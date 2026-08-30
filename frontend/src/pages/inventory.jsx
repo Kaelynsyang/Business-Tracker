@@ -146,19 +146,41 @@ function InventoryPage(){
                     
                 )}
 
-            <div className="inventoryLog"></div>
-                <h2>Inventory Log</h2>
-                {logs.map(log => (
-                    <div key={log._id} className="log">
-                        <h4>Log #{log._id}</h4>
-                        <button onClick={() => deleteOrder(log._id)}>Delete</button>
-                        <p>Date: {new Date(log.createdAt).toLocaleString()} | Product: {log.productName} | Design: {log.design} 
-                            {log?.size && <> | {log?.size}</>} 
-                        </p>
-                        <p>Update: {log.change} | Past: {log.stockBefore} | Current: {log.stockAfter}</p>
-                        <p>Note: {log.note}</p>
+            <div className="inventoryLogs">
+                <h2>Inventory Logs</h2>
+                <div className="inventoryTable">
+                    <div className="inventoryHeader">
+                        <div style={{textAlign: "left"}}>Product</div>
+                        <div style={{textAlign: "left"}}>Design</div>
+                        <div style={{textAlign: "left"}}>Size</div>
+                        <div>Update</div>
+                        <div>Past</div>
+                        <div>Current</div>
+                        <div>Date</div>
+                        <div>Note</div>
                     </div>
+                    <div className="inventoryBody">
+                {logs.map(log => (
+                    //<div key={log._id} className="inventoryLog">
+                    //<th>Log #</th>
+                    //td>#{log._id}</td>
+                    <div key={log._id}>
+                        <div style={{textAlign: "left"}}>{log.productName}</div>
+                        <div style={{textAlign: "left"}}>{log.design}</div>
+                        <div style={{textAlign: "left"}}>{log?.size && <> {log?.size}</>} </div>
+                        <div>{log.change}</div>
+                        <div>{log.stockBefore}</div>
+                        <div>{log.stockAfter}</div>
+                        <div>{new Date(log.createdAt).toLocaleString()}</div>
+                        <div>{log.note}</div>
+                        <div><button className="deleteButton" onClick={() => deleteOrder(log._id)}>X</button></div>
+                    </div>
+                    //</div>
                 ))}
+
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
