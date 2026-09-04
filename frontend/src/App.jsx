@@ -4,7 +4,7 @@ import Homepage from "./pages/homepage";
 import Navbar from "./components/navbar";
 import SalesPage from "./pages/salespage";
 import InventoryPage from "./pages/inventory";
-
+import DocumentationPage from "./pages/documentation";
 
 function App() {
 
@@ -15,6 +15,7 @@ function App() {
         <Route path = "/homepage" element={<Homepage />}></Route>
         <Route path = "/sales" element={<SalesPage />}></Route>
         <Route path = "/inventory" element={<InventoryPage />}></Route>
+        <Route path = "/documentation" element={<DocumentationPage />}></Route>
       </Routes>
     </div>
   );
