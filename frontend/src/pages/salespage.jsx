@@ -490,11 +490,11 @@ function SalesPage() {
                         <ul>
                         {order.items?.map((item, index) => (
                             <li key={`${order._id}-${index}`}>
-                            {item.product} | x{item.quantity} |
+                            {item.product} {" | "} 
                             {item.option &&
                                 Object.entries(item.option).map(([key, value]) => (
                                     <span key={key}>
-                                        {key}: {value}{" "}
+                                        {key}: {value}{" | "}
                                     </span>
                                     ))}
                                 </li>
