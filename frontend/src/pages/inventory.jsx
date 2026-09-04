@@ -1,6 +1,5 @@
 import "../styles/inventory.css";
 import { useEffect, useState } from "react";
-import placeholderPhoto from "../assets/placeholderphoto.jpg";
 
 function InventoryPage(){
     const [products, setProducts] = useState([]);
