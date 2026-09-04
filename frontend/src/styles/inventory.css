@@ -35,6 +35,7 @@
 .displayinv button {
     padding: 8px 4px 8px 4px;
     margin: 0 0 0 12px;
+    margin-left: auto;
     font-family: Hind Guntur;
     line-height: 1.3;
     border: 2px solid #ccc;
@@ -52,7 +53,7 @@
     z-index: 9998;
 }
 
-.popupInventory {
+.adjustmentMenu {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -65,11 +66,11 @@
     background-color: #e0bb58;
 }
 
-.popupInventory p {
+.adjustmentMenu p {
     margin: 0;
 }
 
-.popupInventory h2 {
+.adjustmentMenu h2 {
     margin: 0;
 }
 
@@ -128,7 +129,7 @@
 
 .deleteButton {
     margin: auto;
-    padding: 5px;
+    padding: 0;
 }
 
 .deleteButton:hover {
@@ -137,8 +138,8 @@
 
 .inventoryTable {
     background-color: #2f3269;
-    color:#ccc;
-    --columns: 0.5fr 0.5fr 0.5fr 0.3fr 0.3fr 0.3fr 1fr 1fr 0.2fr;
+    color:#ffffff;
+    --columns: 0.5fr 1fr 0.3fr 0.3fr 0.3fr 1fr;
     text-align: center;
     border-radius: 20px;
     overflow-y: auto;
@@ -157,18 +158,10 @@
     border-bottom: 0.5px solid #aaaaaa;
     background-color: #2f3269;
     font-family: Oswald;
-    font-size: 20px;
-    font-weight: 500;
+    font-size: 24px;
+    font-weight: 600;
     
     box-shadow: 0 1px 0 rgba(255,255,255,.12);
-}
-
-.inventoryBody > div {
-    display: grid;
-    grid-template-columns: var(--columns);
-    
-    padding: 20px;
-    border-bottom: 0.5px solid rgba(255, 255, 255, 0.20);
 }
 
 .inventoryHeader > div,
@@ -180,3 +173,84 @@
     text-align: center;
     vertical-align: middle;
 }
+
+.inventoryBody > div {
+    display: grid;
+    grid-template-columns: var(--columns);
+    
+    padding: 20px;
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.20);
+}
+
+.inventoryBody > div:nth-child(odd) {
+  background-color: #353a78;
+}
+
+.inventoryBody > div:nth-child(even) {
+  background-color: #2f3269;
+}
+
+.inventoryBody {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    font-size: 20px;
+}
+
+.productinfo {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 4px;
+}
+
+.productinfo > div:nth-child(3) {
+    flex-basis: 100%; 
+}
+
+.productinfo > div {
+    text-align: left;
+}
+
+.inventoryBody > div > .productinfo {
+    overflow: visible;
+}
+
+.date {
+    white-space: nowrap;
+    width: max-content;
+    color: #c4c4c4;
+}
+
+.extrainfo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.deletelog {
+    text-align: right;
+}
+/*
+
+.logphoto {
+    width: 100px;
+    height: 100px;
+    aspect-ratio: 1 / 1;
+    display: grid;
+    justify-self: center;
+    place-items: center;
+}
+
+.logphoto img {
+    overflow: hidden;
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+*/
