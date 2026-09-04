@@ -1,5 +1,6 @@
 import "../styles/inventory.css";
 import { useEffect, useState } from "react";
+import placeholderPhoto from "../assets/placeholderphoto.jpg";
 
 function InventoryPage(){
     const [products, setProducts] = useState([]);
@@ -10,7 +11,7 @@ function InventoryPage(){
     const [note, setNote] = useState("");
     const [logs, setLogs] = useState([]);
     const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5001";
-    
+
     useEffect(() => {
         fetch(`${API_URL}/products`)
         .then(res => res.json())
@@ -102,7 +103,7 @@ function InventoryPage(){
                                     {item.size ? product.pricing[item.size.toLowerCase()] : product.pricing.base}
                                     {" | Current Stock: "} 
                                     {item.stock}
-                                    <button onClick={() => openPopup(product, item)}>Adjust Stock</button>
+                                    <button onClick={() => openPopup(product, item)}>Adjust</button>
                                 </li>
                             ))}
                         </ul>
@@ -112,7 +113,7 @@ function InventoryPage(){
 
                 {showPopup && (
                     <div className="overlay">
-                    <div className="popupInventory">
+                    <div className="adjustmentMenu">
                         <h2>Adjust Stock</h2>
                         <p>{selectedItem?.product.name} | {selectedItem?.inventory.design} 
                             {selectedItem?.inventory.size && <>| {selectedItem?.inventory.size}</>}</p>
@@ -151,12 +152,10 @@ function InventoryPage(){
                 <div className="inventoryTable">
                     <div className="inventoryHeader">
                         <div style={{textAlign: "left"}}>Product</div>
-                        <div style={{textAlign: "left"}}>Design</div>
-                        <div style={{textAlign: "left"}}>Size</div>
+                        <div>Design</div>
                         <div>Update</div>
                         <div>Past</div>
                         <div>Current</div>
-                        <div>Date</div>
                         <div>Note</div>
                     </div>
                     <div className="inventoryBody">
@@ -165,15 +164,18 @@ function InventoryPage(){
                     //<th>Log #</th>
                     //td>#{log._id}</td>
                     <div key={log._id}>
-                        <div style={{textAlign: "left"}}>{log.productName}</div>
-                        <div style={{textAlign: "left"}}>{log.design}</div>
-                        <div style={{textAlign: "left"}}>{log?.size && <> {log?.size}</>} </div>
+                        <div className="productinfo">
+                            <div>{log.productName}</div>
+                            <div className="date">{new Date(log.createdAt).toLocaleString()}</div>
+                        </div>
+                        <div>{log.design} {log?.size && <> - {log?.size}</>} </div>    
                         <div>{log.change}</div>
                         <div>{log.stockBefore}</div>
                         <div>{log.stockAfter}</div>
-                        <div>{new Date(log.createdAt).toLocaleString()}</div>
-                        <div>{log.note}</div>
-                        <div><button className="deleteButton" onClick={() => deleteOrder(log._id)}>X</button></div>
+                        <div className="extrainfo">
+                            <div>{log.note}</div>
+                            <div className="deletelog"><button className="deleteButton" onClick={() => deleteOrder(log._id)}>X</button></div>
+                        </div>
                     </div>
                     //</div>
                 ))}
