@@ -167,6 +167,22 @@ function Homepage(){
         console.log(data);
     }
 
+    const importInventoryLogs = async () => {
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const response = await fetch(`${API_URL}/import-inventory-logs`, {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+
+        console.log(data);
+    }
+
     const importOrders = async () => {
         if (!file) return;
 
@@ -255,6 +271,7 @@ function Homepage(){
 
                 <input type="file" accept=".csv" onChange={(e) => setFile(e.target.files[0])}/>
                 <button onClick={importInventory}>Import Inventory</button>
+                <button onClick={importInventoryLogs}>Import Inventory Logs</button>
                 <button onClick={importOrders}>Import Orders</button>
             </div>
             </div>

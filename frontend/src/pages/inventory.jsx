@@ -81,6 +81,7 @@ function InventoryPage(){
         setLogs(data2);
     }
 
+    console.log(logs)
 
     return(
         <div id="inventory">
