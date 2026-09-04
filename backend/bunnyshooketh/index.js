@@ -854,13 +854,13 @@ app.get("/export-orders", async (req, res) => {
 
 
     let csv =
-        "Date,Event,Design,Size,Product,Fandom,Quantity,Unit Price,Deal,Payment Method,Subtotal,Total,Note\n";
+        "Date,Time,Event,Design,Size,Product,Fandom,Quantity,Unit Price,Deal,Payment Method,Subtotal,Total,Note\n";
 
     orders.forEach(order => {
         order.items.forEach(item => {
             const deals = (order.deals || []).map(deal => `${deal.name} ($${deal.discount} off)`).join(" | ");
             csv +=
-                `${(order.createdAt).toLocaleDateString()},` +
+                `${(order.createdAt).toLocaleString()},` +
                 `${order.event || ""},` +
                 `${item.option.design},` +
                 `${item.option.size || ""},` +
@@ -885,11 +885,11 @@ app.get("/export-inventory-logs", async (req, res) => {
     const logs = await InventoryLog.find();
 
     let csv =
-        "Date,Design,Size,Product,Past,Update,Current,Note\n";
+        "Date,Time,Design,Size,Product,Past,Update,Current,Note\n";
 
     logs.forEach(log => {
             csv +=
-                `${(log.createdAt).toLocaleDateString()},` +
+                `${(log.createdAt).toLocaleString()},` +
                 `${log.design},` +
                 `${log.size || ""},` +
                 `${log.productName},` +

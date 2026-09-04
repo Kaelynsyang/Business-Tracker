@@ -315,14 +315,15 @@ function SalesPage() {
     }
 
     return (
-    <div>
+    <div id="orders">
       <h1>Record Sales</h1>
       <div className="saleUI">
-        <div className="addtocart">
-            <div className="addtocartbutton">
+        <div className="selectionitem">
+            <div className="selectionitembuttons">
             {products.map((product) => (
             <button
                 key={product._id}
+                className={selectedProduct === product.name ? "selected" : ""}
                 onClick={() => setSelectedProduct(product.name)}
             >
             {product.name}
@@ -330,7 +331,7 @@ function SalesPage() {
             ))}
         </div>
     {selectedProduct && (
-        <div className="popup">
+        <div className="orderpopup">
             <h2>{selectedProduct}</h2>
         
             {selectedProductData?.fields &&
@@ -348,23 +349,9 @@ function SalesPage() {
                         return !selectedOptions[field] || selectedOptions[field] === value;
                     });
                 });
-                /*
-                if (visibleOptions.length === 0) {
-                    return (
-                        <div key={fieldName}>
-                            <h3>{fieldName}</h3>
-                            <p>
-                                {fieldName === "design"
-                                    ? "Select a fandom first to see designs."
-                                    : "No available options."}
-                            </p>
-                        </div>
-                    );
-                }
-                */
 
                 return (
-                    <div key={fieldName}>
+                    <div className="popupSection" key={fieldName}>
                         {visibleOptions.length > 0 && (<h3>{fieldName}</h3>)}
                         {visibleOptions.map((option) => {
                             const value = option.value;
@@ -384,77 +371,123 @@ function SalesPage() {
                     </div>
                 );
             })}
-
-        <button onClick={addToCart}>
-          Add to Cart
-        </button>
+        <div className="checkout">
+            <button onClick={addToCart}>Add to Cart</button>
+        </div>
       </div>
     )}
     </div>
         <div className="cart">
-            <ul>
-                {order.map((item, index) => (
-                    <li key={`${item.product}-${index}`}>
-                        {item.product}{" - "}
-                        {item.option?.size && `${item.option.size} - `}
-                        {item.option?.design && `${item.option.design} - `}
-                        x{item.quantity} {" | "}
-                        {"Fandom"}: {item.option?.fandom} {" | "}
-                        ${item.unitPrice} {" | Total: $"}
-                        {item.lineTotal}
-                    </li>
+            <h2>Cart</h2>
+            <div className="cartitems">
+                <h3>Total Items</h3>
+                <ul>
+                    {order.map((item, index) => (
+                        <li key={`${item.product}-${index}`}>
+                            {item.product}{" - "}
+                            {item.option?.size && `${item.option.size} - `}
+                            {item.option?.design && `${item.option.design} - `}
+                            x{item.quantity} {" | "}
+                            {"Fandom"}: {item.option?.fandom} {" | "}
+                            ${item.unitPrice} {" | Total: $"}
+                            {item.lineTotal}
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        <div className="cartitems">
+            <h3>Deals</h3>
+            <div className="cartbuttons">
+                {deals.map((deal) => (
+                    <button key={deal.name} onClick={() => toggleDeal(deal)} 
+                    className={selectedDeals.some((selectedDeal) => selectedDeal.name === deal.name) ? "selected" : ""}>
+                        {deal.name}</button>
                 ))}
-            </ul>
-        <h3>Deals</h3>
+            </div>
+        </div>
 
-        {deals.map((deal) => (
-            <button key={deal.name} onClick={() => toggleDeal(deal)} 
-            className={selectedDeals.some((selectedDeal) => selectedDeal.name === deal.name) ? "selected" : ""}>
-                {deal.name}</button>
-        ))}
+        <div className="cartitems">
+            <h3>Event</h3>
 
-        <h3>Payment Method</h3>
+            <div className="cartbuttons">
+                {events.map((eventMap) => (
+                    <button key={eventMap} onClick={() => setEvent(eventMap)} 
+                    className={eventMap === event ? "selected" : ""}>
+                        {eventMap}</button>
+                ))}
+            </div>
+        </div>
+        
+        <div className="cartitems">
+<h3>Payment Method</h3>
 
-        <button
-        onClick={() => setPaymentMethod("Cash")}
-        className={paymentMethod === "Cash" ? "selected" : ""}
-        >Cash</button>
+        <div className="cartbuttons payment">
+            <button
+                onClick={() => setPaymentMethod("Cash")}
+                className={paymentMethod === "Cash" ? "selected" : ""}
+                >Cash</button>
 
-        <button
-        onClick={() => setPaymentMethod("Card")}
-        className={paymentMethod === "Card" ? "selected" : ""}
-        >Card</button>
+                <button
+                onClick={() => setPaymentMethod("Card")}
+                className={paymentMethod === "Card" ? "selected" : ""}
+                >Card</button>
 
-        <button
-        onClick={() => setPaymentMethod("Zelle")}
-        className={paymentMethod === "Zelle" ? "selected" : ""}
-        >Zelle</button>
+                <button
+                onClick={() => setPaymentMethod("Zelle")}
+                className={paymentMethod === "Zelle" ? "selected" : ""}
+                >Zelle</button>
+            </div>
+        </div>
+        
+        
+        <div className="cartitems">
+            <h3>Summary</h3>
+                <ul>
+                    {order.map((item, index) => (
+                        <li key={`${item.product}-${index}`}>
+                            {item.product}{" - "}
+                            {item.option?.size && `${item.option.size} - `}
+                            {item.option?.design && `${item.option.design} - `}
+                            x{item.quantity} {" | "}
+                            {"Fandom"}: {item.option?.fandom} {" | "}
+                            ${item.unitPrice} {" | Total: $"}
+                            {item.lineTotal}
+                        </li>
+                    ))}
+                    <p>Payment: {paymentMethod} | Deal: {selectedDeals?.map(deal => deal.name).join(", ")} | Event: {event}</p>
 
+                </ul>                    
 
-        <h3>Event</h3>
+            
+            <h3>Subtotal: ${subtotal}</h3>
+            <h3 style={{color: "#858585"}}>Discount: ${totalDiscount}</h3>
+            <h2>Total: ${total}</h2>
+        </div>
 
-        {events.map((eventMap) => (
-            <button key={eventMap} onClick={() => setEvent(eventMap)} 
-            className={eventMap === event ? "selected" : ""}>
-                {eventMap}</button>
-        ))}
-
-        <h3>Subtotal: ${subtotal}</h3>
-        <h3>Discount: ${totalDiscount}</h3>
-        <h2>Total: ${total}</h2>
-
-        <h3>Complete Order</h3>
-        <button onClick={checkout}>Checkout</button>
+        <div className="checkout">
+            <button onClick={checkout}>Checkout</button>
         </div>
         </div>
+        </div>
+
+        <div className="orderlogs">
+
+        <div className="ordersearchbar">
+            <h2>Search</h2>
+        </div>
+
         <div className="completedOrders">
             <h2>Completed Orders</h2>
             {orders.map((order) => (
                 <div key={order._id} className="order">
-                    <h4>Order #{order._id}</h4>
-                    <button onClick={() => openPopupOrder(order)}>Edit</button>
-                    <p>Total: ${order.total} | Payment: {order.paymentMethod} | Deal: {order.deals?.map(deal => deal.name).join(", ")} | Event: {order.event} | Date: {new Date(order.createdAt).toLocaleString()}</p>
-                    <ul>
+                    <div className="orderheader">
+                        <button className="editorder" onClick={() => openPopupOrder(order)}>Edit</button>
+                        <button className="deleteorderbutton" onClick={() => deleteOrder(order._id)}>Delete</button>
+                        <h3>Order #{order._id} | Event: {order.event}</h3>
+                    </div>
+                    <p className="orderdate">{new Date(order.createdAt).toLocaleString()}</p>
+                    <div className="orderbody">
+                        <ul>
                         {order.items?.map((item, index) => (
                             <li key={`${order._id}-${index}`}>
                             {item.product} | x{item.quantity} |
@@ -466,14 +499,25 @@ function SalesPage() {
                                     ))}
                                 </li>
                             ))}
-                    </ul>
-                    <button onClick={() => deleteOrder(order._id)}>Delete</button>
+                        </ul>
+
+                        <div className="receiptfooter">
+                            <p>Deal(s): {order.deals?.map(deal => deal.name).join(", ")} <br /> 
+                                Payment: {order.paymentMethod} <br /> 
+                                Subtotal: {order.subtotal} 
+                            </p>
+                            <h3>Total: ${order.total}</h3>
+                        </div>  
+                    </div>
+                    
                 </div>   
             ))}
         </div>
+        </div>
 
         {showPopup && (
-            <div className="popupOrders">
+            <div className="overlay">
+            <div className="adjustmentMenu">
             <form>
                 <h2>Adjust Order</h2>
                 <p>Order ID: #{orderPopup._id}</p>
@@ -523,6 +567,7 @@ function SalesPage() {
                     <button className="save" onClick={() => handleSave(orderPopup._id)}>Save</button>
                     <button className="closePopup" onClick={() => closePopupOrder()}>Cancel</button>
                 </div>
+            </div>
             </div>
         )}
         
