@@ -374,7 +374,7 @@ const stickerDesigns = [
                 { value: "Enji", dependsOn: { fandom: "Gachiakuta"}},
                 { value: "zanka", dependsOn: { fandom: "Gachiakuta"}},
                 { value: "riyo", dependsOn: { fandom: "Gachiakuta"}},
-                { value: "rudo ", dependsOn: { fandom: "Gachiakuta"}},
+                { value: "rudo", dependsOn: { fandom: "Gachiakuta"}},
                 { value: "amo", dependsOn: { fandom: "Gachiakuta"}},
                 { value: "Xiao lantern", dependsOn: { fandom: "Genshin Impact"}},
                 { value: "flins", dependsOn: { fandom: "Genshin Impact"}},
@@ -885,7 +885,7 @@ app.get("/export-inventory-logs", async (req, res) => {
     const logs = await InventoryLog.find();
 
     let csv =
-        "Date,Time,Design,Size,Product,Past,Update,Current,Note\n";
+        "Date,Time,Design,Size,Product,Past,Update,Current,Note,Id\n";
 
     logs.forEach(log => {
             csv +=
@@ -896,7 +896,8 @@ app.get("/export-inventory-logs", async (req, res) => {
                 `${log.stockBefore || 0},` +
                 `${log.change || 0},` +
                 `${log.stockAfter || 0},` +
-                `${log.note || ""}\n`;
+                `${log.note || ""},` + 
+                `${log._id || ""}\n`;
     });
 
     res.header("Content-Type", "text/csv");
@@ -1042,7 +1043,7 @@ app.post("/import-inventory", upload.single("file"), async (req, res) => {
         }
         
         for (const product of products.values()) {
-                await product.save();
+            await product.save();
         }
 
         res.json({
@@ -1058,6 +1059,97 @@ app.post("/import-inventory", upload.single("file"), async (req, res) => {
         });
     }
 });
+
+
+app.post("/import-inventory-logs", upload.single("file"), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({
+                error: "No CSV file uploaded"
+            });
+        }
+
+        const csv = req.file.buffer.toString("utf-8");
+        
+        const records = parse(csv, {
+            columns: true,
+            skip_empty_lines: true,
+            trim: true
+        })
+
+        console.log(records);
+
+        const errors = [];
+        const products = new Map();
+        let imported = 0;
+
+        for (const row of records) {
+            let product = products.get(row.Product);
+
+            if (!product) {
+                product = await ProductModel.findOne({
+                    name: row.Product
+                })
+
+                if(!product) {
+                    errors.push({
+                        row,
+                        error: `Product not found: ${row.Product}`
+                    });
+                    continue;
+                }
+                products.set(row.Product, product)
+            }
+
+            const inventoryItem = product.inventory.find(item => 
+                item.design === row.Design &&
+                (item.size || null) === (row.Size || null)
+            );
+        
+            if (!inventoryItem){
+                errors.push({
+                    row,
+                    error: `Inventory item not found: ${row.Design} / ${row.Size}`
+                });
+                continue;
+            }
+
+            const logId = row.Id;
+            const stockBefore = Number(row.Past);
+            const change = Number(row.Update);
+            const stockAfter = Number(row.Current);
+            const note = row.Note;
+
+            const log = new InventoryLog({
+                _id: logId,
+                createdAt: new Date(`${row.Date} ${row.Time}`),
+                productId: product._id,
+                productName: product.name,
+                design: inventoryItem.design,
+                size: inventoryItem.size,
+                change,
+                stockBefore,
+                stockAfter,
+                note
+            })
+
+            await log.save();
+            imported++;
+        } 
+
+        res.json({
+            imported,
+            errors
+        })
+
+    } catch (error) {
+        console.log(error);
+
+        res.status(500).json({
+            error: "Failed to import inventory logs"
+        })
+    }
+})
 
 
 app.post("/import-orders", upload.single("file"), async (req, res) => {
@@ -1185,7 +1277,7 @@ app.post("/import-orders", upload.single("file"), async (req, res) => {
 
             const order = new OrderModel({
                 _id: orderId,
-                createdAt: firstRow.Date,
+                createdAt: new Date(`${firstRow.Date} ${firstRow.Time}`).toISOString(),
                 deals: dealsArray,
                 event: firstRow.Event,
                 items,

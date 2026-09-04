@@ -22,7 +22,7 @@ const OrderSchema = new mongoose.Schema({
     }],
 
     subtotal: Number,
-    discount: Number,
+    discount: Number, //i think i can get rid of this, i just calculate it
     total: Number
 });
 

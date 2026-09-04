@@ -531,7 +531,7 @@ function SalesPage() {
                     <option value="Zelle" />
                 </datalist>
 
-                <label htmlFor="dealsInput"> <br/> Deal(s): </label>
+                <label htmlFor="dealsInput"> Deal(s): </label>
                 <input type="text" id="dealsInput" name="selectedDeals" list="selectedDeals-options" value={dealInput}
                  onChange={handleDealChange} placeholder={orderPopup.deals?.map(deal => deal.name).join(", ")}/>
                 <datalist id="selectedDeals-options">
@@ -544,11 +544,12 @@ function SalesPage() {
                     <span key={deal.name}>
                         {deal.name}
                             <button type="button" onClick={() => toggleDeal(deal)}>x</button>
+                            <br/>
                     </span>
                 ))}
                 </div>
 
-                <label htmlFor="eventInput"> <br/> Event: </label>
+                <label htmlFor="eventInput"> Event: </label>
                 <input type="text" id="eventInput" name="event" list="event-options" value={event}
                  onChange={handleChange} placeholder={orderPopup.event}/>
                 <datalist id="event-options">

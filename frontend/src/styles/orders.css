@@ -249,8 +249,14 @@
 
 .adjustmentMenu label {
     font-size: 24px;
+    margin: 0;
+    padding: 0;
 }
 
 .adjustmentMenu input {
     font-size: 24px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #ffffff;
+    margin: 8px 8px 8px 0;
 }
