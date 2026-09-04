@@ -7,12 +7,11 @@ nav {
 }
 
 nav ul {
-  list-style-type: none;
+  display: flex;
+  width: 100%;
+  list-style: none;
   overflow: hidden;
-}
-
-nav li {
-  float: left;
+  padding: 0 40px;
 }
 
 nav li a {
@@ -32,4 +31,8 @@ nav li a:hover {
 ul {
   list-style-type: none;
   overflow: hidden;
+}
+
+.documentation {
+    margin-left: auto;
 }
