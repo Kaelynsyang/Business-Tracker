@@ -114,7 +114,6 @@
 .popupinput:focus {
   border-color: #2f3269;
   outline: none;
-  background-color: #ccc;
 }
 
 .adjustsection p {

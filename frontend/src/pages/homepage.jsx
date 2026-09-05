@@ -1,4 +1,4 @@
-import '../index.css'
+import "../styles/homepage.css";
 import { useEffect, useState } from "react"
 
 function Homepage(){
@@ -53,18 +53,20 @@ function Homepage(){
         product => product.name === fieldChoice
     )
 
-    const fields = ["Stickers", "Prints", "Keychains", "Sticker Sheet", "Heart Pins", "Foil Pins", "Standees", "Fandom", "Event"] //THIS IS HARD CODED
+    const fields = ["Stickers", "Prints", "Keychains", "Sticker Sheet", "Heart Pins", "Foil Pins", "Standees", "Plushies", "Fandom", "Event"] //THIS IS HARD CODED
     
     function RegularSection({products, stats}) {
         return (
             <div>
                 {products.map(product => (
                         <div key={product.name}>{product.inventory.map(item => {
-                            const statsDetails = stats.hashMapDetails[item.design];
+                            const key = `${product.name}-${item.design}-${item.size}`;
+                            const statsAllTime = stats.hashMapAllTime[key];
+                            const statsTotalSold = stats.hashMapTotalSold[key];
                         
                             return(
                                     <div key={`${item.design}-${item.size}`}>
-                                        {item.design} | {item.size && <>{item.size} |</>} All-time Stock: {statsDetails?.allTimeStock ?? 0}| Total Sold: {statsDetails?.totalSold ?? 0}
+                                        {item.design} | {item.size && <>{item.size} |</>} All-time Stock: {statsAllTime ?? 0}| Total Sold: {statsTotalSold ?? 0}
                                     </div>
                             )})}
                         </div>
@@ -202,28 +204,47 @@ function Homepage(){
     console.log(products);
             
     return(
-        <div>
-            <div className="homepage">
+        <div id="homepage">
+            <div className="home">
                 <h1>Dashboard</h1>
             <div className="dashboard">
+                <div className="topStatsRow">
+                <div className="topStatsCard">
+                    <h3>Best Seller</h3>
+                    <p>
+                        1st {stats.topSeller} at {stats.topSellerCount}<br/>
+                        2nd {stats.secondSeller} at {stats.secondSellerCount}<br/> 
+                        3rd {stats.thirdSeller} at {stats.thirdSellerCount}
+                    </p>
+                </div>
+                <div className="topStatsCard">
+                    <h3>Best Type/Category</h3>
+                    <p>
+                        1st {stats.topType} at {stats.topTypeCount}<br/> 
+                        2nd {stats.secondType} at {stats.secondTypeCount}<br/> 
+                        3rd {stats.thirdType} at {stats.thirdTypeCount} 
+                    </p>
+                </div>
+                <div className="topStatsCard">
+                    <h3>Top Fandom</h3>
+                    <p>
+                        1st {stats.topFandom} at {stats.topFandomCount}<br/> 
+                        2nd {stats.secondFandom} at {stats.secondFandomCount}<br/> 
+                        3rd {stats.thirdFandom} at {stats.thirdFandomCount}
+                    </p>
+                </div>
+                </div>
+                <div className="generalStats">
+                    <p>
+                        Best Deal: {stats.topDeal} at {stats.topDealCount}<br/> 
+                        2nd Best Deal: {stats.secondTopDeal} at {stats.secondTopDealCount}<br/> 
+                        Best Event: {stats.topEvent} at ${stats.topEventCount}<br/>
+                        Preferred Payment: {stats.topPayment} at {stats.topPaymentCount}<br/>
+                        Total Items Sold: {stats.totalItemSoldCount}
+                    </p>
+                </div>
+
                 <p>
-                    Best Seller: <br/>
-                    1st {stats.topSeller} at {stats.topSellerCount}<br/>
-                    2nd {stats.secondSeller} at {stats.secondSellerCount}<br/> 
-                    3rd {stats.thirdSeller} at {stats.thirdSellerCount}<br/> <br/>
-                    Best Type/Category: <br/>
-                    1st {stats.topType} at {stats.topTypeCount}<br/> 
-                    2nd {stats.secondType} at {stats.secondTypeCount}<br/> 
-                    3rd {stats.thirdType} at {stats.thirdTypeCount}<br/> <br/>
-                    Top Fandom: <br/>
-                    1st {stats.topFandom} at {stats.topFandomCount}<br/> 
-                    2nd {stats.secondFandom} at {stats.secondFandomCount}<br/> 
-                    3rd {stats.thirdFandom} at {stats.thirdFandomCount}<br/> <br/>
-                    Best Deal: {stats.topDeal} at {stats.topDealCount}<br/> 
-                    2nd Best Deal: {stats.secondTopDeal} at {stats.secondTopDealCount}<br/> 
-                    Best Event: {stats.topEvent} at ${stats.topEventCount}<br/>
-                    Preferred Payment: {stats.topPayment} at {stats.topPaymentCount}<br/>
-                    Total Items Sold: {stats.totalItemSoldCount}<br/>
                     Net Profit:  <br/>
                     Expenses: 
                 </p>
@@ -231,12 +252,15 @@ function Homepage(){
 
             <div className="detailsSection">
                 <h2>Details</h2>
-                    {fields.map((field, index) => (
-                        <button 
-                        key={index}
-                        onClick={() => setFieldChoice(field)}
-                        >{field}</button>
-                    ))}
+                    <div className="detailSelection">
+                        {fields.map((field, index) => (
+                            <button 
+                            key={index}
+                            onClick={() => setFieldChoice(field)}
+                            >{field}</button>
+                        ))}
+                    </div>
+                    
                     {fieldChoice && (
                         <div className="popup">
                             <h3>{fieldChoice}</h3>
@@ -252,7 +276,7 @@ function Homepage(){
                         </div>
                     )}
             </div>
-            <div className='buttons'>
+            <div className='exportImport'>
                 <button onClick={() =>
                     window.open(
                         `${API_URL}/export-orders`,

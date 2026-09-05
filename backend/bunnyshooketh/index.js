@@ -191,7 +191,8 @@ app.get("/homepage", async (req, res) => {
     const hashMapTopDeal = {};
     const hashMapTopEvent = {};
     const hashMapTopPayment = {};
-    const hashMapDetails = {};
+    const hashMapAllTime = {};
+    const hashMapTotalSold = {};
     
     const salesByProduct = {};
     const salesByFandom = {};
@@ -209,17 +210,10 @@ app.get("/homepage", async (req, res) => {
     : [];
     
     for (const log of logs) {
-        /* finance goes here prob */
-        if (!hashMapDetails[log.design]) {
-            hashMapDetails[log.design] = {
-                allTimeStock: 0,
-                totalSold: 0
-            };
-        }
+        const key = `${log.productName}-${log.design}-${log.size}`;
+        
         if (log.change > 0){
-            hashMapDetails[log.design].allTimeStock += log.change;
-        } else if (log.change < 0) {
-            hashMapDetails[log.design].totalSold += Math.abs(log.change);
+            hashMapAllTime[key] = (hashMapAllTime[key] ?? 0) + log.change;
         }
     }
 
@@ -228,6 +222,9 @@ app.get("/homepage", async (req, res) => {
             hashMapTopSeller[item.option.design] = (hashMapTopSeller[item.option.design] || 0) + item.quantity;
             hashMapTopType[item.product] = (hashMapTopType[item.product] || 0) + item.quantity;
             hashMapTopFandom[item.option.fandom] = (hashMapTopFandom[item.option.fandom] || 0) + item.quantity;
+            
+            const key = `${item.product}-${item.option.design}-${item.option.size}`;
+            hashMapTotalSold[key] = (hashMapTotalSold[key] || 0) + item.quantity;
             totalItemSoldCount += item.quantity;
         }
         order.deals?.forEach(deal => {
@@ -325,12 +322,13 @@ app.get("/homepage", async (req, res) => {
         topEventCount: max_topEvent?.first ?? null, 
         topPayment: max_topPayment?.firstKey ?? null,
         topPaymentCount: max_topPayment?.first ?? null,
-        totalItemSoldCount: totalItemSoldCount,
-        hashMapDetails: hashMapDetails,
-        eventResults: eventResults,
+        totalItemSoldCount,
+        hashMapAllTime,
+        hashMapTotalSold,
+        eventResults,
         eventRevenue,
-        fandoms: fandoms,
-        fandomResults: fandomResults
+        fandoms,
+        fandomResults
     });
     } catch (err) {
         console.error(err);
@@ -556,6 +554,7 @@ const standeeDesigns = [
                 {value: "Canto 7: The Dream Ending", dependsOn: { fandom: "Limbus Company"}},
                 {value: "Canto 4: The Unchanging", dependsOn: { fandom: "Limbus Company"}},
                 {value: "Canto 9: The Unsevering", dependsOn: { fandom: "Limbus Company"}},
+                {value: "Riddle cup", dependsOn: { fandom: "Twisted Wonderland"}}
             ]
 
 const standeeInventory = standeeDesigns.map(design => ({
@@ -817,7 +816,8 @@ app.get("/seed-products", async (req, res) => {
     await mergeInventory(
         "Standees",{
             fandom: [
-                { value: "Limbus Company"}
+                { value: "Limbus Company"},
+                { value: "Twisted Wonderland"}
                 ],
             design: standeeDesigns,
             quantity: [1, 2, 3, 4, 5]
@@ -859,7 +859,7 @@ app.get("/export-orders", async (req, res) => {
 
 
     let csv =
-        "Date,Time,Event,Design,Size,Product,Fandom,Quantity,Unit Price,Deal,Payment Method,Subtotal,Total,Note\n";
+        "Date,Time,Event,Design,Size,Product,Fandom,Quantity,Unit Price,Deal,Payment Method,Subtotal,Total,Note,Id\n";
 
     orders.forEach(order => {
         order.items.forEach(item => {
@@ -877,6 +877,7 @@ app.get("/export-orders", async (req, res) => {
                 `${order.paymentMethod || ""},` +
                 `${order.subtotal || 0},` +
                 `${order.total || 0},` +
+                `${order.note || ""},` +
                 `${order._id || ""}\n`;
         });
     });
@@ -1180,7 +1181,7 @@ app.post("/import-orders", upload.single("file"), async (req, res) => {
         let imported = 0;
 
         for (const row of records) {
-            const id = row.Note;
+            const id = row.Id;
             
             if (!orders.has(id)) {
                 orders.set(id, []);
@@ -1240,6 +1241,8 @@ app.post("/import-orders", upload.single("file"), async (req, res) => {
                 continue;
             }
 
+            const note = firstRow.Note;
+
             const items = [];
 
             for (const row of rows) {
@@ -1288,7 +1291,8 @@ app.post("/import-orders", upload.single("file"), async (req, res) => {
                 items,
                 subtotal: subtot,
                 total: tot,
-                paymentMethod: firstRow["Payment Method"]
+                paymentMethod: firstRow["Payment Method"],
+                note
             })
 
             await order.save();
