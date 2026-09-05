@@ -90,6 +90,10 @@
     border: 2px solid #d1ceb4;
 }
 
+.cartitems p {
+    margin: 0;   
+}
+
 .cartitems h3 {
     padding: 0 16px 16px 16px;
 }
