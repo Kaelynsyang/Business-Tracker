@@ -27,30 +27,129 @@
     margin-bottom: 0;
 }
 
-.generalStats {
-    padding: 24px;
+.statsRow {
+    padding: 24px 0;
     margin: 24px 0;
     background-color: #f9f1e6;
+    display: flex;
     box-shadow: 4px 4px 10px 0px rgba(0, 0, 0, 0.1);
     border-radius: 20px;
     border: 0.5px solid #aaaaaa;
     min-width: 0;
 }
 
-.generalStats p {
+.statsRow p {
     margin: 0;
 }
 
-.detailsSection {
-    padding: 0 2% 24px 2%;
+.statCol {
+    flex: 1;
+    padding: 0 24px;
+    border-right: 1px solid #aaaaaa;
+    display: flex;
+    flex-direction: column;
 }
 
-.detailSelection {
+.statCol:last-child {
+  border-right: none;
+}
+
+.statCount {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: auto;
+    color: var(--navySecondary);
+}
+
+/* Details */
+
+.detailsSection {
+    padding: 0 2% 24px 2%;
+    color: var(--blackText);
+}
+
+.detail {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+}
+
+.popup {
+    padding: 24px;
+    margin: 24px;
+    background-color: var(--navySecondary);
+    border-radius: 20px;
     
+    color: white;
+}
+
+.inventoryTable.detailTable {
+    --columns: 1fr 1fr 1fr;
+    margin-bottom: 12px;
+}
+
+.detailRow {
+    display: grid;
+    grid-template-columns: var(--columns);
+}
+
+.detailRow:nth-child(odd) {
+  background-color: #353a78;
+}
+
+.detailRow:nth-child(even) {
+  background-color: #2f3269;
+}
+
+.detailpopup {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(180px, 0.3fr);
+    gap: 20px;
+    align-items: start;
+}
+
+.detailTableButtons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.detailDashboard {
+    border-left: 0.5px solid #aaaaaa;
+    padding-left: 24px;
+}
+
+.detailDashboard h4 {
+    margin: 0 0 24px 0;
+}
+
+.unitsSold {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.unitSold {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 20px;
 }
 
 /* Export/Import */
 
 .exportImport {
     padding: 0 2% 24px 2%;
+}
+
+.exportImportContainer {
+    display:flex;
+}
+
+.export {
+    padding: 0 2%;
+}
+
+.import {
+    padding: 0 2%;
 }

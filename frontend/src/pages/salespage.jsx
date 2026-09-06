@@ -1,13 +1,3 @@
-/*
-css styling
-dashboard
-specifics with more buttons and stuff and prices
-discounts/deals
-i traded lol
-cash or card
-fandom then design options
-
-*/
 import { useEffect, useState } from "react";
 import "../styles/orders.css";
 
