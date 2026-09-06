@@ -6,7 +6,6 @@ function InventoryPage(){
     const [selectedItem, setSelectedItem] = useState(null);
     const [adjustment, setAdjustment] = useState("");
     const [showPopup, setShowPopup] = useState(false);
-    const [stockChange, setStockChange] = useState(0);
     const [note, setNote] = useState("");
     const [logs, setLogs] = useState([]);
     const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5001";

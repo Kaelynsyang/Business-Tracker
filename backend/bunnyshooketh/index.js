@@ -228,7 +228,7 @@ app.get("/homepage", async (req, res) => {
             totalItemSoldCount += item.quantity;
         }
         order.deals?.forEach(deal => {
-            if (deal != "None"){
+            if (deal.name !== "None"){
                 hashMapTopDeal[deal.name] = (hashMapTopDeal[deal.name] || 0) + 1;
             }
         })
@@ -314,9 +314,9 @@ app.get("/homepage", async (req, res) => {
         secondFandomCount: max_topFandom?.second ?? null, 
         thirdFandom: max_topFandom?.thirdKey ?? null, 
         thirdFandomCount: max_topFandom?.third ?? null,
-        topDeal: max_topDeal?.firstKey ?? null,  //CHANGE TO FIRSTKEY WHEN RESET ALL ORDERS
+        topDeal: max_topDeal?.firstKey ?? null,
         topDealCount: max_topDeal?.first ?? null, 
-        secondTopDeal: max_topDeal?.secondKey ?? null,  //CHANGE
+        secondTopDeal: max_topDeal?.secondKey ?? null,
         secondTopDealCount: max_topDeal?.second ?? null, 
         topEvent: max_topEvent?.firstKey ?? null, 
         topEventCount: max_topEvent?.first ?? null, 
@@ -520,7 +520,7 @@ const stickerSheetDesigns = [
                 { value: "MY Bake", dependsOn: { fandom: "Miffy"}},
                 { value: "MY matcha", dependsOn: { fandom: "Miffy"}},
                 { value: "MY fruit", dependsOn: { fandom: "Miffy"}},
-                { value: "MU Songs", dependsOn: { fandom: "Miffy"}}
+                { value: "MU Songs", dependsOn: { fandom: "Vocaloid"}}
             ]
 
 const stickerSheetInventory = stickerSheetDesigns.map(design => ({
@@ -712,6 +712,7 @@ app.get("/seed-products", async (req, res) => {
                 { value: "Limbus Company"},
                 { value: "Kpop DH"},
                 { value: "Nezha"},
+                { value: "Twisted Wonderland"},
                 { value: "Vocaloid"}],
             design: stickerDesigns,
             quantity: [1, 2, 3, 4, 5, 6]
