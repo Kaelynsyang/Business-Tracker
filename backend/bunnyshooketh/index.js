@@ -611,11 +611,18 @@ app.post("/orders", async (req, res) => {
         for (const item of savedOrder.items){
             const product = await ProductModel.findOne({ name: item.product });
 
-            const inventoryItem = product.inventory.find(
+            const inventoryItem = product?.inventory.find(
                 inv =>
                     inv.design === item.option.design && 
                     (inv.size || null) === (item.option.size || null)
             );
+
+            if (!product || !inventoryItem) {
+                throw new Error(
+                    `Inventory item not found: ${item.product}, ` +
+                    `${item.option.design}, ${item.option.size}`
+                );
+            }
 
             console.log(item);
             console.log(item.option);

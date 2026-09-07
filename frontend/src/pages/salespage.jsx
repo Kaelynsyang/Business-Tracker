@@ -128,20 +128,28 @@ function SalesPage() {
     };
 
     const toggleOption = (fieldName, option) => {
+        const value = option.value;
+        
         setSelectedOptions((currentOptions) => {
-            const value = option.value;
-
             if (fieldName === "fandom") {
                 return {
                     ...currentOptions, fandom: currentOptions.fandom === value ? undefined : value
                 }
             }
+
+            if (fieldName === "size" || fieldName === "quantity") {
+                return {
+                    ...currentOptions,
+                    [fieldName]:
+                        currentOptions[fieldName] === value ? undefined : value
+                };
+            }
         
             const currentValues = currentOptions[fieldName] || [];
-            const selected = currentValues.includes(value);
         
             return {
-                ...currentOptions, [fieldName]: selected 
+                ...currentOptions, 
+                [fieldName]: currentValues.includes(value) 
                 ? currentValues.filter((item) !== value)
                 : [...currentValues, value]
             }
@@ -222,7 +230,7 @@ function SalesPage() {
     };
 
     useEffect(() => {
-        setSelectedOptions([]);
+        setSelectedOptions({});
         setQuantity(1);
     }, [selectedProduct]);
 
@@ -366,10 +374,16 @@ function SalesPage() {
                                 <button
                                     key={value}
                                     onClick={() => toggleOption(fieldName, option)}
-                                    className={fieldName === "fandom" ? selectedOptions.fandom === option.value
-                                        ? "selected" : ""
-                                        : selectedOptions[fieldName]?.includes(option.value) ? "selected" : ""
-                                    }>
+                                    className={
+                                        fieldName === "fandom" ||
+                                        fieldName === "size" ||
+                                        fieldName === "quantity"
+                                            ? selectedOptions[fieldName] === option.value
+                                            ? "selected"
+                                            : ""
+                                        : selectedOptions[fieldName]?.includes(option.value)
+                                            ? "selected"
+                                            : "" }>
                                     {option.value}
                                 </button>
                             );
