@@ -160,7 +160,7 @@ function Homepage(){
 
     function EventSection() {
         return (
-            <div className="detailpopup">
+            <div className="event detailpopup">
                 <div className="detailContent">
                 <div className="detailTableButtons">
                 {events.map((eventMap) => (
@@ -197,7 +197,7 @@ function Homepage(){
                         <div className="detailDashboard">
                         <h4>Event Revenue: ${stats.eventRevenue}</h4>
                             <h4>Product Statistics</h4>
-                            <h4 style={{"fontWeight": "400"}}>Units Sold</h4>
+                            <h4 style={{"fontWeight": "400"}}>Units Sold | Profit</h4>
                             <div className="unitsSold">
                                 {products.map(product => {
                                     const productResults = stats.eventResults.filter(
@@ -215,7 +215,7 @@ function Homepage(){
                             return (
                                     <div className="unitSold">
                                         <div key={product._id}>{product.name}</div>
-                                        <div>{filterProduct} | Profit: ${revenue}</div>
+                                        <div>{filterProduct} | ${revenue}</div>
                                     </div>
                                 )
                             })}
@@ -349,24 +349,29 @@ function Homepage(){
             <div className='exportImport'>
                 <h2>Export/Import Data</h2>
                 <div className="exportImportContainer">
-                <div className="export">
+                <div className="export exportImportCard">
                     <h3>Export</h3>
-                    <button onClick={() =>
-                        window.open(`${API_URL}/export-orders`, "_blank"
-                    )}>Export Orders (CSV)</button>
-                    <button onClick={() =>
-                        window.open(`${API_URL}/export-inventory-logs`, "_blank"
-                    )}>Export Inventory Logs(CSV)</button>
-                    <button onClick={() =>
-                        window.open(`${API_URL}/export-inventory`, "_blank"
-                    )}>Export Inventory</button>
+                    <div className="exportImportButtons">
+                        <button onClick={() =>
+                            window.open(`${API_URL}/export-orders`, "_blank"
+                        )}>Export Orders (CSV)</button>
+                        <button onClick={() =>
+                            window.open(`${API_URL}/export-inventory-logs`, "_blank"
+                        )}>Export Inventory Logs(CSV)</button>
+                        <button onClick={() =>
+                            window.open(`${API_URL}/export-inventory`, "_blank"
+                        )}>Export Inventory</button>
+                    </div>
+                    
                 </div>
-                <div className="import">
+                <div className="import exportImportCard">
                     <h3>Import</h3>
-                    <input type="file" accept=".csv" onChange={(e) => setFile(e.target.files[0])}/>
-                    <button onClick={importInventory}>Import Inventory</button>
-                    <button onClick={importInventoryLogs}>Import Inventory Logs</button>
-                    <button onClick={importOrders}>Import Orders</button>
+                    <div className="exportImportButtons">
+                        <input type="file" accept=".csv" onChange={(e) => setFile(e.target.files[0])}/>
+                        <button onClick={importInventory}>Import Inventory</button>
+                        <button onClick={importInventoryLogs}>Import Inventory Logs</button>
+                        <button onClick={importOrders}>Import Orders</button>
+                    </div>
                 </div>
             </div>
             </div>

@@ -10,15 +10,15 @@
 .topStatsRow {
     display: flex;
     justify-content: space-evenly;
-    gap: 24px;
+    gap: 1.3rem;
 }
 
 .topStatsCard {
-    padding: 24px;
+    padding: 1.5rem;
     background-color: #f9f1e6;
     box-shadow: 4px 4px 10px 0px rgba(0, 0, 0, 0.1);
     flex: 1;
-    border-radius: 20px;
+    border-radius: 1.25rem;
     border: 0.5px solid #aaaaaa;
     min-width: 0;
 }
@@ -28,12 +28,12 @@
 }
 
 .statsRow {
-    padding: 24px 0;
-    margin: 24px 0;
+    padding: 1.5rem 0;
+    margin: 1.5rem 0;
     background-color: #f9f1e6;
     display: flex;
     box-shadow: 4px 4px 10px 0px rgba(0, 0, 0, 0.1);
-    border-radius: 20px;
+    border-radius: 1.25rem;
     border: 0.5px solid #aaaaaa;
     min-width: 0;
 }
@@ -44,14 +44,15 @@
 
 .statCol {
     flex: 1;
-    padding: 0 24px;
+    padding: 0 1.5rem;
     border-right: 1px solid #aaaaaa;
     display: flex;
     flex-direction: column;
 }
 
 .statCol:last-child {
-  border-right: none;
+    border-right: none;
+    border-bottom: none;
 }
 
 .statCount {
@@ -64,21 +65,22 @@
 /* Details */
 
 .detailsSection {
-    padding: 0 2% 24px 2%;
+    padding: 0 2%;
     color: var(--blackText);
 }
 
 .detail {
     display: flex;
-    gap: 24px;
+    flex-wrap: wrap;
+    gap: 0.5rem;
     justify-content: center;
 }
 
 .popup {
-    padding: 24px;
-    margin: 24px;
+    padding: 1.5rem;
+    margin: 1.5rem;
     background-color: var(--navySecondary);
-    border-radius: 20px;
+    border-radius: 1.25rem;
     
     color: white;
 }
@@ -103,9 +105,13 @@
 
 .detailpopup {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(180px, 0.3fr);
-    gap: 20px;
+    grid-template-columns: minmax(0, 1fr) minmax(11.25rem, 0.3fr);
+    gap: 1.25rem;
     align-items: start;
+}
+
+.event.detailpopup {
+    grid-template-columns: minmax(0, 1fr) minmax(14rem, 0.3fr);
 }
 
 .detailTableButtons {
@@ -116,11 +122,11 @@
 
 .detailDashboard {
     border-left: 0.5px solid #aaaaaa;
-    padding-left: 24px;
+    padding-left: 1.5rem;
 }
 
 .detailDashboard h4 {
-    margin: 0 0 24px 0;
+    margin: 0 0 1.5rem 0;
 }
 
 .unitsSold {
@@ -133,23 +139,66 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 20px;
+    font-size: 1.5rem;
 }
 
 /* Export/Import */
 
 .exportImport {
-    padding: 0 2% 24px 2%;
+    padding: 0 2% 1.5rem 2%;
+}
+
+.exportImport input {
+    width: 100%;
 }
 
 .exportImportContainer {
     display:flex;
 }
 
+.exportImportCard {
+    padding: 2%;
+    border-radius: 1.25rem;
+    color: white;
+}
+
+.exportImportButtons {
+    padding: 1.5rem 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
 .export {
-    padding: 0 2%;
+    width: 50%;
+    margin-right: 2rem;
+    background-color: #2f3269;
 }
 
 .import {
-    padding: 0 2%;
+    width: 50%;
+    background-color: #353a78;
+}
+
+@media screen and (max-width:760px) {
+    .topStatsRow {
+        flex-wrap: wrap;
+        flex-direction: column;
+    }
+
+    .statsRow {
+        flex-wrap: wrap;
+        flex-direction: column;
+    }
+
+    .statCol {
+        border-bottom: 0.5px solid #aaaaaa;
+        padding-bottom: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .statCol:last-child {
+        padding-bottom: 0;
+        margin-bottom: 0;
+    }
 }
