@@ -107,7 +107,8 @@ function Homepage(){
                 <div className="detailTableButtons">
                 {[...new Set(stats.fandoms)].map(fandom => {
                     return (
-                        <button key={fandom} onClick={() => setSelectedFandom(fandom)}>{fandom}</button>
+                        <button key={fandom} onClick={() => setSelectedFandom(fandom)} 
+                        className={fandom === selectedFandom ? "selected" : ""}>{fandom}</button>
                         )
                 })}
                 </div>
@@ -152,7 +153,7 @@ function Homepage(){
                             })}
                         </div>
                         <div>
-                            <p>Total Sold: {stats.fandomResults.amountSold} <br/> Total Revenue: {stats.fandomResults.revenue}</p>
+                            <p className="generalStats">Total Sold: {stats.totalSalesByFandom[selectedFandom]?.count ?? 0} <br/> Total Revenue: {stats.totalSalesByFandom[selectedFandom]?.revenue ?? 0}</p>
                         </div>
                         <p>
                             <br/>
