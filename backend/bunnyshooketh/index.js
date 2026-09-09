@@ -193,9 +193,11 @@ app.get("/homepage", async (req, res) => {
     const hashMapTopPayment = {};
     const hashMapAllTime = {};
     const hashMapTotalSold = {};
+    const hashMapProducts = {};
     
     const salesByProduct = {};
     const salesByFandom = {};
+    const totalSalesByFandom = {};
     let eventRevenue = 0;
 
     let totalItemSoldCount = 0;
@@ -226,6 +228,16 @@ app.get("/homepage", async (req, res) => {
             const key = `${item.product}-${item.option.design}-${item.option.size}`;
             hashMapTotalSold[key] = (hashMapTotalSold[key] || 0) + item.quantity;
             totalItemSoldCount += item.quantity;
+
+            if (!hashMapProducts[item.product]) {
+                hashMapProducts[item.product] = {
+                    count: 0,
+                    revenue: 0
+                };
+            }
+
+            hashMapProducts[item.product].count += item.quantity;
+            hashMapProducts[item.product].revenue += item.unitPrice * item.quantity;        
         }
         order.deals?.forEach(deal => {
             if (deal.name !== "None"){
@@ -247,6 +259,15 @@ app.get("/homepage", async (req, res) => {
     }
 
     for (const item of fandomItems) {
+        if (!totalSalesByFandom[key]) { // NEED TO CHANGE THE KEY
+                totalSalesByFandom[key] = {
+                    count: 0,
+                    revenue: 0
+                };
+            }
+
+        salesByFandom[key].count += item.quantity;
+        salesByFandom[key].revenue += item.unitPrice * item.quantity; 
         const key = `${item.product}-${item.option.design}-${item.option.size}`;
         salesByFandom[key] = (salesByFandom[key] || 0) + item.quantity;
     }
@@ -328,7 +349,8 @@ app.get("/homepage", async (req, res) => {
         eventResults,
         eventRevenue,
         fandoms,
-        fandomResults
+        fandomResults,
+        hashMapProducts
     });
     } catch (err) {
         console.error(err);
@@ -509,6 +531,18 @@ const keychainInventory = keychainDesigns.map(design => ({
     stock: 0
 }))
 
+const specialtyKeychainDesigns = [
+                { value: "Ryoshu Hell Screen Lace", dependsOn: { fandom: "Limbus Company"}},
+                { value: "Araya Hell Screen Lace", dependsOn: { fandom: "Limbus Company"}},
+                { value: "X Cards", dependsOn: { fandom: "TBHX"}}
+            ]
+
+
+const specialtyKeychainInventory = specialtyKeychainDesigns.map(design => ({
+    design: design.value,
+    stock: 0
+}))
+
 const stickerSheetDesigns = [
                 { value: "CW Food", dependsOn: { fandom: "Chiiawaka"}},
                 { value: "CW Emotions", dependsOn: { fandom: "Chiiawaka"}},
@@ -654,7 +688,6 @@ app.post("/orders", async (req, res) => {
     }
 });
 
-
 app.get("/orders", async (req, res) => {
     try {
     const orders = await OrderModel.find();
@@ -702,6 +735,67 @@ app.patch("/orders/:id", async (req, res) => {
     }
 })
 
+app.post("/orders/undo", async (req, res) => {
+    const session = await mongoose.startSession();
+
+    try {
+        let result;
+
+        await session.withTransaction(async () => {
+            const order = req.body;
+
+            for (const item of order.items){
+                const product = await ProductModel.findOne({ name: item.product }).session(session);
+
+                const inventoryItem = product?.inventory.find(
+                inv =>
+                    inv.design === item.option.design && 
+                    (inv.size || null) === (item.option.size || null)
+                );
+
+                if (!product || !inventoryItem) {
+                    throw new Error(
+                        `Inventory item not found: ${item.product}, ` +
+                        `${item.option.design}, ${item.option.size}`
+                    );
+                }
+            
+                const stockBefore = inventoryItem.stock;
+                inventoryItem.stock += item.quantity;
+                const stockAfter = inventoryItem.stock;
+                await product.save({ session });
+            
+                await InventoryLog.create([{
+                    productId: product._id,
+                    productName: product.name,
+                    design: item.option.design,
+                    size: item.option.size,
+                    change: item.quantity,
+                    stockBefore,
+                    stockAfter,
+                    note: `Undoing Order #${order._id}`
+                }],
+                    { session }
+                );
+            }
+
+            result = {
+                success: true,
+                orderId: order._id
+            };
+        });
+
+        res.json(result);
+
+    } catch(err) {
+        console.error(err);
+        res.status(500).json({
+            error: err.message
+        });
+    } finally {
+        await session.endSession();
+    }
+});
 
 //Products
 
@@ -777,6 +871,21 @@ app.get("/seed-products", async (req, res) => {
             "base": 13
         }
     );
+
+    await mergeInventory(
+        "Specialty Keychains", {
+            fandom: [
+                { value: "Limbus Company"},
+                { value: "TBHX"}
+            ],
+            design: specialtyKeychainDesigns,
+            quantity: [1, 2, 3, 4, 5]
+        },
+        specialtyKeychainInventory,
+        {
+            "base": 18
+        }
+    );
     
     await mergeInventory(
         "Sticker Sheet",{
@@ -784,7 +893,9 @@ app.get("/seed-products", async (req, res) => {
                 { value: "Chiiawaka" },
                 { value: "Hypnosis Mic"},
                 { value: "Miffy"},
-                { value: "Rally Leftovers"}],
+                { value: "Rally Leftovers"},
+                { value: "Vocaloid"}
+            ],
             design: stickerSheetDesigns,
             quantity: [1, 2, 3, 4, 5]
         },

@@ -135,6 +135,7 @@
 }
 
 .inventoryTable {
+    min-width: 760px;
     background-color: #2f3269;
     color:#ffffff;
     --columns: 0.5fr 1fr 0.3fr 0.3fr 0.3fr 1fr;
@@ -172,6 +173,12 @@
     vertical-align: middle;
 }
 
+.inventoryHeader > div,
+.inventoryBody > div {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
 .inventoryBody > div {
     display: grid;
     grid-template-columns: var(--columns);
@@ -193,6 +200,13 @@
     flex-direction: column;
     gap: 0.2rem;
     font-size: 1.25rem;
+}
+
+.tableScroll {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .productinfo {

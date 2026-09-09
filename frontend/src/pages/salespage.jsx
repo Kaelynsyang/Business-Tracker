@@ -14,6 +14,8 @@ function SalesPage() {
     const [event, setEvent] = useState("");
     const [showPopup, setShowPopup] = useState(false);
     const [orderPopup, setOrderPopup] = useState(null);
+    const [deleteConfirmationPopup, setDeleteConfirmationPopup] = useState(false);
+    const [deleteConfirmation, setDeleteConfirmation] = useState(null);
     const [dealInput, setDealInput] = useState("");
     const [dateTime, setDateTime] = useState("");
     const [note, setNote] = useState("");
@@ -73,7 +75,10 @@ function SalesPage() {
             discount: 10 },
         { 
             name: "18 Riddle Cup Standee",
-            discount: 27 }
+            discount: 27 },
+        { 
+            name: "2 for 32 Specialty Keychains",
+            discount: 4 }
     ]
 
     const events = [
@@ -150,7 +155,7 @@ function SalesPage() {
             return {
                 ...currentOptions, 
                 [fieldName]: currentValues.includes(value) 
-                ? currentValues.filter((item) !== value)
+                ? currentValues.filter((item) => item !== value)
                 : [...currentValues, value]
             }
         })
@@ -223,11 +228,41 @@ function SalesPage() {
             {
                 method: "DELETE"
             });
-
+        
         setOrders(
             orders.filter(order => order._id !== id)
         );
+
+        closeDeleteConfirmationPopup();
     };
+
+    const undoInventory = async (order) => {
+        const response = await fetch(
+            `${API_URL}/orders/undo`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(order)
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || "Failed to undo inventory");
+        }
+
+        deleteOrder(order._id);
+    }
+
+    const openDeleteConfirmationPopup = (id) => {
+        setDeleteConfirmationPopup(true);
+        setDeleteConfirmation(id);
+    }
+
+    const closeDeleteConfirmationPopup = () => {
+        setDeleteConfirmationPopup(false);
+    }
 
     useEffect(() => {
         setSelectedOptions({});
@@ -501,7 +536,7 @@ function SalesPage() {
                 <div key={order._id} className="order">
                     <div className="orderheader">
                         <button className="editorder" onClick={() => openPopupOrder(order)}>Edit</button>
-                        <button className="deleteorderbutton" onClick={() => deleteOrder(order._id)}>Delete</button>
+                        <button className="deleteorderbutton" onClick={() => openDeleteConfirmationPopup(order)}>Delete</button>
                         <h3>Order #{order._id} | Event: {order.event}</h3>
                     </div>
                     <p className="orderdate">{new Date(order.createdAt).toLocaleString()} | {order.note}</p>
@@ -588,6 +623,21 @@ function SalesPage() {
                 <div className="buttonMenu">
                     <button className="save" onClick={() => handleSave(orderPopup._id)}>Save</button>
                     <button className="closePopup" onClick={() => closePopupOrder()}>Cancel</button>
+                </div>
+            </div>
+            </div>
+        )}
+
+
+        {deleteConfirmationPopup && (
+            <div className="overlay">
+            <div className="adjustmentMenu">
+                <h2>Delete Confirmation</h2>
+                <p>Are you sure you want to delete this order?</p>
+                <div className="buttonMenu">
+                    <button className="delete" onClick={() => deleteOrder(deleteConfirmation._id)}>Delete Order Log</button>
+                    <button className="delete" onClick={() => undoInventory(deleteConfirmation)}>Delete Order and Undo Inventory Logs</button>
+                    <button className="closePopupDelete" onClick={() => closeDeleteConfirmationPopup()}>Cancel</button>
                 </div>
             </div>
             </div>
