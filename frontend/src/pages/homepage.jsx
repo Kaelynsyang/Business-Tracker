@@ -19,7 +19,7 @@ function Homepage(){
         "ANM JUN 26"
     ]
 
-    const fields = ["Stickers", "Prints", "Keychains", "Sticker Sheet", "Heart Pins", "Foil Pins", "Standees", "Plushies", "Fandom", "Event"] //THIS IS HARD CODED
+    const fields = ["Stickers", "Prints", "Keychains", "Specialty Keychains", "Sticker Sheet", "Heart Pins", "Foil Pins", "Standees", "Plushies", "Fandom", "Event"] //THIS IS HARD CODED
 
     const statItems = [
         { label: "Best Deal", value: `${stats.topDeal}`, count: `${stats.topDealCount}` },
@@ -63,7 +63,10 @@ function Homepage(){
     )
 
     function RegularSection({products, stats}) {
+        const productName = products[0]?.name;
         return (
+            <div className="regularSectionHeader">
+                <p className="orderdate">Total Sold: {stats.hashMapProducts[productName]?.count ?? 0} | Total Revenue: ${stats.hashMapProducts[productName]?.revenue ?? 0}</p>
             <div className="inventoryTable detailTable">
                 <div className="inventoryHeader detailHeader">
                     <div>Design</div>
@@ -92,6 +95,7 @@ function Homepage(){
                             )})
                     ))} 
                 </div>
+            </div>
             </div>
         )
     }
@@ -146,6 +150,9 @@ function Homepage(){
                                     </div>
                                 )
                             })}
+                        </div>
+                        <div>
+                            <p>Total Sold: {stats.fandomResults.amountSold} <br/> Total Revenue: {stats.fandomResults.revenue}</p>
                         </div>
                         <p>
                             <br/>
@@ -213,8 +220,8 @@ function Homepage(){
                                     }, 0)
 
                             return (
-                                    <div className="unitSold">
-                                        <div key={product._id}>{product.name}</div>
+                                    <div className="unitSold" key={product._id}>
+                                        <div>{product.name}</div>
                                         <div>{filterProduct} | ${revenue}</div>
                                     </div>
                                 )

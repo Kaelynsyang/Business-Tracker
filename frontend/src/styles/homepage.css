@@ -142,6 +142,12 @@
     font-size: 1.5rem;
 }
 
+.regularSectionHeader p.orderdate {
+    margin: 0; 
+    font-size: 1.25rem;
+    color: #cccccc;
+}
+
 /* Export/Import */
 
 .exportImport {
@@ -171,7 +177,7 @@
 
 .export {
     width: 50%;
-    margin-right: 2rem;
+    margin-right: 1.5rem;
     background-color: #2f3269;
 }
 

@@ -216,6 +216,7 @@
 .orderheader {
     display: flex;
     flex-direction: row-reverse;
+    gap: 0.6rem;
 }
 
 .orderheader h3 {
@@ -279,4 +280,37 @@
 
 #dateInput {
     width: 100%;
+}
+
+.delete:hover {
+    background-color:#8a0708;
+}
+
+@media screen and (max-width:760px) {
+    .saleUI {
+        display: block;
+    }
+
+    .selectionitem {
+        width: 100%;
+    }
+
+    .cart {
+        width: 100%;
+    }
+
+    .orderheader {
+        flex-direction: column;
+    }
+
+    .orderheader button {
+        width: 40%;
+        margin-left: auto;
+    }
+    
+    .cartbuttons button:not(.selected):focus {
+        background-color: var(--navySecondary);
+        color: white;
+        border: 2px solid var(--navySecondary);
+    }
 }
