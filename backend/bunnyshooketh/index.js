@@ -238,6 +238,16 @@ app.get("/homepage", async (req, res) => {
 
             hashMapProducts[item.product].count += item.quantity;
             hashMapProducts[item.product].revenue += item.unitPrice * item.quantity;        
+
+            if (!totalSalesByFandom[item.option.fandom]) {
+                totalSalesByFandom[item.option.fandom] = {
+                    count: 0,
+                    revenue: 0
+                };
+            }
+
+            totalSalesByFandom[item.option.fandom].count += item.quantity;
+            totalSalesByFandom[item.option.fandom].revenue += item.unitPrice * item.quantity; 
         }
         order.deals?.forEach(deal => {
             if (deal.name !== "None"){
@@ -259,15 +269,6 @@ app.get("/homepage", async (req, res) => {
     }
 
     for (const item of fandomItems) {
-        if (!totalSalesByFandom[key]) { // NEED TO CHANGE THE KEY
-                totalSalesByFandom[key] = {
-                    count: 0,
-                    revenue: 0
-                };
-            }
-
-        salesByFandom[key].count += item.quantity;
-        salesByFandom[key].revenue += item.unitPrice * item.quantity; 
         const key = `${item.product}-${item.option.design}-${item.option.size}`;
         salesByFandom[key] = (salesByFandom[key] || 0) + item.quantity;
     }
@@ -350,6 +351,7 @@ app.get("/homepage", async (req, res) => {
         eventRevenue,
         fandoms,
         fandomResults,
+        totalSalesByFandom,
         hashMapProducts
     });
     } catch (err) {
