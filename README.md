@@ -1,2 +1,2 @@
 # bunnyshooketh
-npm install multer csv-parse
+npm i express mongoose cors dotenv multer csv-parse npm i
