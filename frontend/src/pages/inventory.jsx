@@ -148,6 +148,7 @@ function InventoryPage(){
 
             <div className="inventoryLogs">
                 <h2>Inventory Logs</h2>
+                <div className="tableScroll">
                 <div className="inventoryTable">
                     <div className="inventoryHeader">
                         <div style={{textAlign: "left"}}>Product</div>
@@ -180,6 +181,7 @@ function InventoryPage(){
                 ))}
 
                     </div>
+                </div>
                 </div>
             </div>
         </div>

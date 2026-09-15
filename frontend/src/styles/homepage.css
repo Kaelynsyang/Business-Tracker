@@ -120,6 +120,11 @@
     gap: 8px;
 }
 
+.detailTableButtons .selected {
+    background-color: #2f3269;
+    color: white;
+}
+
 .detailDashboard {
     border-left: 0.5px solid #aaaaaa;
     padding-left: 1.5rem;
@@ -127,6 +132,11 @@
 
 .detailDashboard h4 {
     margin: 0 0 1.5rem 0;
+}
+
+.detailDashboard p.generalStats {
+    padding-top: 8px;
+    color: white;
 }
 
 .unitsSold {
@@ -140,6 +150,12 @@
     justify-content: space-between;
     align-items: center;
     font-size: 1.5rem;
+}
+
+.regularSectionHeader p.orderdate {
+    margin: 0; 
+    font-size: 1.25rem;
+    color: #cccccc;
 }
 
 /* Export/Import */
@@ -171,7 +187,7 @@
 
 .export {
     width: 50%;
-    margin-right: 2rem;
+    margin-right: 1.5rem;
     background-color: #2f3269;
 }
 
