@@ -153,7 +153,7 @@ function Homepage(){
                             })}
                         </div>
                         <div>
-                            <p className="generalStats">Total Sold: {stats.totalSalesByFandom[selectedFandom]?.count ?? 0} <br/> Total Revenue: {stats.totalSalesByFandom[selectedFandom]?.revenue ?? 0}</p>
+                            <p className="generalStats">Total Sold: {stats.totalSalesByFandom[selectedFandom]?.count ?? 0} <br/> Total Revenue: ${stats.totalSalesByFandom[selectedFandom]?.revenue ?? 0}</p>
                         </div>
                         <p>
                             <br/>
