@@ -12,18 +12,18 @@
 
 .selectionitem {
     width: 50%;
-    padding: 20px;
+    padding: 1.25rem;
     display: flex;
     flex-direction: column; 
     justify-content: flex-start;
 }
 
 .selectionitem h2 {
-    margin: 10px 0px;
+    margin: 0.6rem 0;
 }
 
 .selectionitem h3 {
-    padding: 20px;
+    padding: 1.25rem;
 }
 
 .selectionitembuttons {
@@ -33,8 +33,8 @@
 }
 
 .selectionitembuttons button {
-    padding: 20px;
-    font-size: 24px;
+    padding: 1.25rem;
+    font-size: 1.5rem;
     background-color: #Ffffff;
     border-radius: 0;
     border: 0;
@@ -57,8 +57,8 @@
     background-color: var(--bgBeige);
     border-radius: 20px;
     background-color: rgb(250, 246, 215);
-    font-size: 24px;
-    padding: 15px;
+    font-size: 1.5rem;
+    padding: 0.9rem;
 }
 
 .cart h2 {
@@ -66,8 +66,8 @@
 }
 
 .cart button {
-    margin: 5px;
-    font-size: 24px;
+    margin: 0.3rem;
+    font-size: 1.5rem;
     background-color: var(--navySecondary);
     color: #ffffff;
     border: 2px solid var(--navySecondary);
@@ -85,30 +85,35 @@
 }
 
 .cartitems {
-    margin-bottom: 20px;
+    margin-bottom: 1.25rem;
     border-radius: 20px;
     border: 2px solid #d1ceb4;
 }
 
+.cartitems p {
+    margin: 0;   
+}
+
 .cartitems h3 {
-    padding: 0 16px 16px 16px;
+    padding: 0 1rem 1rem 1rem;
 }
 
 .cartitems ul {
-    margin: 0 16px 16px 16px;
+    margin: 0 1rem 1rem 1rem;
 }
 
 .cartitems li {
-    padding-bottom: 16px;
+    padding-bottom: 1rem;
 }
 
 .cartbuttons {
-    padding: 0 16px 16px 11px;
+    padding: 0 1rem 1rem 0.7rem;
 }
 
 .payment {
     display: flex;
-    gap: 10px;
+    flex-wrap: wrap;
+    gap: 0.6rem;
     justify-content: center;
 }
 
@@ -118,7 +123,7 @@
 
 .popupSection {
     border-top: 3px solid var(--bgBeige);
-    padding-bottom: 10px;
+    padding-bottom: 0.6rem;
 }
 
 .popupSection .selected{
@@ -136,18 +141,18 @@
 }
 
 .orderpopup h3 {
-    padding: 12px 4px;
+    padding: 0.75rem 0.25rem;
 }
 
 .orderpopup button {
-    margin: 5px;
-    font-size: 24px;
+    margin: 0.3rem;
+    font-size: 1.5rem;
 }
 
 .checkout {
-    padding: 30px 0;
+    padding: 1.9rem 0;
     display: flex;
-    gap: 10px;
+    gap: 0.6rem;
     justify-content: center;
     flex-direction: column;
 }
@@ -156,8 +161,8 @@
     background-color: var(--yellowAccent);
     color: var(--blackText);
     border: 2px solid var(--yellowAccent);
-    padding: 10px;
-    font-size: 24px;
+    padding: 0.6rem;
+    font-size: 1.5rem;
     border-radius: 8px;
     transition-duration: 0.4s;
 }
@@ -171,18 +176,22 @@
 
 .orderlogs {
     display: flex;
+    max-width: 100%;
+    overflow-wrap: anywhere;
 }
 
 .completedOrders {
-    margin: 0 5%;
+    margin: 0 4%;
+    width: 80%;
 }
 
 .order {
-    padding: 20px;
-    margin: 20px;
+    padding: 1.25rem;
+    margin: 1.25rem;
     background-color: #2f3269;
     color:#ffffff;
     border-radius: 20px;
+    overflow-wrap: anywhere;
 }
 
 .order p {
@@ -191,17 +200,17 @@
 }
 
 .order ul {
-    gap: 0px 10px;
+    gap: 0px 0.6rem;
     /* box-shadow: 4px 4px 10px 0px rgba(0, 0, 0, 0.1); */
     background-color: #353a78;
     border-radius: 20px;
     margin: 0;
-    padding: 2% 0 20px 2%;
+    padding: 2% 0 1.25rem 2%;
 }
 
 .order li {
-    font-size: 20px;
-    padding: 10px 20px 10px 10px;
+    font-size: 1.25rem;
+    padding: 0.6rem 1.25rem 0.6rem 0.6rem;
 }
 
 .orderheader {
@@ -213,20 +222,26 @@
     margin-right: auto;
 }
 
+.deleteorderbutton,
+.editorder {
+    max-height: 4rem;
+    overflow-wrap: break-word;
+}
+
 .deleteorderbutton:hover {
     background-color: #8a0708;
 }
 
 .order .orderdate {
     margin: 0; 
-    font-size: 20px;
+    font-size: 1.25rem;
     color: #cccccc;
 }
 
 .receiptfooter {
     position: relative;
     margin-left: auto;
-    padding: 0 24px;
+    padding: 0 1.5rem;
 }
 
 .receiptfooter p {
@@ -243,20 +258,25 @@
 
 .ordersearchbar {
     background-color: #353a78;
+    width: 20%;
 }
 
 /* Order Adjustment Popup */
 
 .adjustmentMenu label {
-    font-size: 24px;
+    font-size: 1.5rem;
     margin: 0;
     padding: 0;
 }
 
 .adjustmentMenu input {
-    font-size: 24px;
+    font-size: 1.5rem;
     border: 1px solid #ccc;
     border-radius: 4px;
     background-color: #ffffff;
-    margin: 8px 8px 8px 0;
+    margin: 0.5rem 0.5rem 0.5rem 0;
+}
+
+#dateInput {
+    width: 100%;
 }

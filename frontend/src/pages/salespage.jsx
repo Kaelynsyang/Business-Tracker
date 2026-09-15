@@ -1,13 +1,3 @@
-/*
-css styling
-dashboard
-specifics with more buttons and stuff and prices
-discounts/deals
-i traded lol
-cash or card
-fandom then design options
-
-*/
 import { useEffect, useState } from "react";
 import "../styles/orders.css";
 
@@ -26,6 +16,7 @@ function SalesPage() {
     const [orderPopup, setOrderPopup] = useState(null);
     const [dealInput, setDealInput] = useState("");
     const [dateTime, setDateTime] = useState("");
+    const [note, setNote] = useState("");
 
     const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5001";
 
@@ -47,6 +38,15 @@ function SalesPage() {
         { 
             name: "Gacha",
             discount: 5 }, 
+        { 
+            name: "Gacha x2",
+            discount: 10 }, 
+        { 
+            name: "Gacha x3",
+            discount: 15 }, 
+        { 
+            name: "Gacha x6",
+            discount: 30 }, 
         { 
             name: "Gacha Guarentee",
             discount: 0 }, 
@@ -70,7 +70,10 @@ function SalesPage() {
             discount: 1 },
         { 
             name: "5 for $55 keychains",
-            discount: 10 }
+            discount: 10 },
+        { 
+            name: "18 Riddle Cup Standee",
+            discount: 27 }
     ]
 
     const events = [
@@ -125,20 +128,28 @@ function SalesPage() {
     };
 
     const toggleOption = (fieldName, option) => {
+        const value = option.value;
+        
         setSelectedOptions((currentOptions) => {
-            const value = option.value;
-
             if (fieldName === "fandom") {
                 return {
                     ...currentOptions, fandom: currentOptions.fandom === value ? undefined : value
                 }
             }
+
+            if (fieldName === "size" || fieldName === "quantity") {
+                return {
+                    ...currentOptions,
+                    [fieldName]:
+                        currentOptions[fieldName] === value ? undefined : value
+                };
+            }
         
             const currentValues = currentOptions[fieldName] || [];
-            const selected = currentValues.includes(value);
         
             return {
-                ...currentOptions, [fieldName]: selected 
+                ...currentOptions, 
+                [fieldName]: currentValues.includes(value) 
                 ? currentValues.filter((item) !== value)
                 : [...currentValues, value]
             }
@@ -194,7 +205,8 @@ function SalesPage() {
                     deals: selectedDeals,   //here?
                     total,
                     paymentMethod,
-                    event
+                    event,
+                    note
                 })
             }
         )
@@ -218,7 +230,7 @@ function SalesPage() {
     };
 
     useEffect(() => {
-        setSelectedOptions([]);
+        setSelectedOptions({});
         setQuantity(1);
     }, [selectedProduct]);
 
@@ -258,6 +270,7 @@ function SalesPage() {
         if (fieldName === 'paymentMethod') setPaymentMethod(newValue);
         if (fieldName === 'event') setEvent(newValue);
         if (fieldName === 'date') setDateTime(newValue);
+        if (fieldName === 'note') setNote(newValue);
     }
 
     const handleChange = (e) => {
@@ -299,6 +312,7 @@ function SalesPage() {
                     paymentMethod,
                     deals: selectedDeals,
                     event,
+                    note,
                     createdAt: dateTime
                 })
             })
@@ -360,10 +374,16 @@ function SalesPage() {
                                 <button
                                     key={value}
                                     onClick={() => toggleOption(fieldName, option)}
-                                    className={fieldName === "fandom" ? selectedOptions.fandom === option.value
-                                        ? "selected" : ""
-                                        : selectedOptions[fieldName]?.includes(option.value) ? "selected" : ""
-                                    }>
+                                    className={
+                                        fieldName === "fandom" ||
+                                        fieldName === "size" ||
+                                        fieldName === "quantity"
+                                            ? selectedOptions[fieldName] === option.value
+                                            ? "selected"
+                                            : ""
+                                        : selectedOptions[fieldName]?.includes(option.value)
+                                            ? "selected"
+                                            : "" }>
                                     {option.value}
                                 </button>
                             );
@@ -454,11 +474,10 @@ function SalesPage() {
                             {item.lineTotal}
                         </li>
                     ))}
-                    <p>Payment: {paymentMethod} | Deal: {selectedDeals?.map(deal => deal.name).join(", ")} | Event: {event}</p>
-
+                    <p>Payment: {paymentMethod} <br/> Deal(s): {selectedDeals?.map(deal => deal.name).join(", ")} <br/> Event: {event}</p>
                 </ul>                    
 
-            
+            <h3>Notes:<input className="popupinput" id="noteInputCart" name="note" type="text" value={note} onChange={handleChange}/></h3>
             <h3>Subtotal: ${subtotal}</h3>
             <h3 style={{color: "#858585"}}>Discount: ${totalDiscount}</h3>
             <h2>Total: ${total}</h2>
@@ -485,7 +504,7 @@ function SalesPage() {
                         <button className="deleteorderbutton" onClick={() => deleteOrder(order._id)}>Delete</button>
                         <h3>Order #{order._id} | Event: {order.event}</h3>
                     </div>
-                    <p className="orderdate">{new Date(order.createdAt).toLocaleString()}</p>
+                    <p className="orderdate">{new Date(order.createdAt).toLocaleString()} | {order.note}</p>
                     <div className="orderbody">
                         <ul>
                         {order.items?.map((item, index) => (
@@ -557,13 +576,15 @@ function SalesPage() {
                         <option key={event} value={event}/>
                     ))}
                 </datalist>
-                    
+
                 <label htmlFor="dateInput"> <br/> Date and Time: </label>
                 <input type="datetime-local" id="dateInput" name="date" list="date-options" value={dateTime}
                  onChange={handleChange}/>
             </form>
+
                 <p>Date: {new Date(orderPopup.createdAt).toLocaleString()}</p>
-        
+                <p>Note: <input className="popupInput" name="note" type="string" value={note} onChange={handleChange}/></p>
+                    
                 <div className="buttonMenu">
                     <button className="save" onClick={() => handleSave(orderPopup._id)}>Save</button>
                     <button className="closePopup" onClick={() => closePopupOrder()}>Cancel</button>

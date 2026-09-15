@@ -1,0 +1,204 @@
+#homepage {
+    width: 100%;
+    margin: 0;
+}
+
+.dashboard {
+    padding: 0 2%;
+}
+
+.topStatsRow {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 1.3rem;
+}
+
+.topStatsCard {
+    padding: 1.5rem;
+    background-color: #f9f1e6;
+    box-shadow: 4px 4px 10px 0px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    border-radius: 1.25rem;
+    border: 0.5px solid #aaaaaa;
+    min-width: 0;
+}
+
+.topStatsCard p {
+    margin-bottom: 0;
+}
+
+.statsRow {
+    padding: 1.5rem 0;
+    margin: 1.5rem 0;
+    background-color: #f9f1e6;
+    display: flex;
+    box-shadow: 4px 4px 10px 0px rgba(0, 0, 0, 0.1);
+    border-radius: 1.25rem;
+    border: 0.5px solid #aaaaaa;
+    min-width: 0;
+}
+
+.statsRow p {
+    margin: 0;
+}
+
+.statCol {
+    flex: 1;
+    padding: 0 1.5rem;
+    border-right: 1px solid #aaaaaa;
+    display: flex;
+    flex-direction: column;
+}
+
+.statCol:last-child {
+    border-right: none;
+    border-bottom: none;
+}
+
+.statCount {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: auto;
+    color: var(--navySecondary);
+}
+
+/* Details */
+
+.detailsSection {
+    padding: 0 2%;
+    color: var(--blackText);
+}
+
+.detail {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.popup {
+    padding: 1.5rem;
+    margin: 1.5rem;
+    background-color: var(--navySecondary);
+    border-radius: 1.25rem;
+    
+    color: white;
+}
+
+.inventoryTable.detailTable {
+    --columns: 1fr 1fr 1fr;
+    margin-bottom: 12px;
+}
+
+.detailRow {
+    display: grid;
+    grid-template-columns: var(--columns);
+}
+
+.detailRow:nth-child(odd) {
+  background-color: #353a78;
+}
+
+.detailRow:nth-child(even) {
+  background-color: #2f3269;
+}
+
+.detailpopup {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(11.25rem, 0.3fr);
+    gap: 1.25rem;
+    align-items: start;
+}
+
+.event.detailpopup {
+    grid-template-columns: minmax(0, 1fr) minmax(14rem, 0.3fr);
+}
+
+.detailTableButtons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.detailDashboard {
+    border-left: 0.5px solid #aaaaaa;
+    padding-left: 1.5rem;
+}
+
+.detailDashboard h4 {
+    margin: 0 0 1.5rem 0;
+}
+
+.unitsSold {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.unitSold {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.5rem;
+}
+
+/* Export/Import */
+
+.exportImport {
+    padding: 0 2% 1.5rem 2%;
+}
+
+.exportImport input {
+    width: 100%;
+}
+
+.exportImportContainer {
+    display:flex;
+}
+
+.exportImportCard {
+    padding: 2%;
+    border-radius: 1.25rem;
+    color: white;
+}
+
+.exportImportButtons {
+    padding: 1.5rem 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
+.export {
+    width: 50%;
+    margin-right: 2rem;
+    background-color: #2f3269;
+}
+
+.import {
+    width: 50%;
+    background-color: #353a78;
+}
+
+@media screen and (max-width:760px) {
+    .topStatsRow {
+        flex-wrap: wrap;
+        flex-direction: column;
+    }
+
+    .statsRow {
+        flex-wrap: wrap;
+        flex-direction: column;
+    }
+
+    .statCol {
+        border-bottom: 0.5px solid #aaaaaa;
+        padding-bottom: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .statCol:last-child {
+        padding-bottom: 0;
+        margin-bottom: 0;
+    }
+}

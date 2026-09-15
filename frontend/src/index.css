@@ -31,42 +31,49 @@ p {
   color: var(--blackText);
   padding: 0px;
   font-family: Hind Guntur;
-  font-size: 24px;
+  font-size: 1.5rem;
 }
 
 h1 {
   font-family: Laila;
   text-align: center;
-  font-size: 60px;
-  padding: 20px;
+  font-size: 3.75rem;
+  padding: 1.25rem;
   margin: 0;
 }
 
 h2 {
   text-align: center;
-  font-size: 40px;
-  padding: 20px;
+  font-size: 2.4rem;
+  padding: 1.25rem;
   font-family: Oswald;
 }
 
 h3 {
-  font-size: 36px;
+  font-size: 2.25rem;
   font-family: Oswald;
   margin: 0 0;
 }
 
+h4 {
+  font-size: 1.75rem;
+  font-family: Oswald;
+  margin: 1.5rem 0 0 0;
+}
+
 .selected {
-  background-color: green;
+  background-color: var(--navySecondary);
   color: white;
 }
 
 button {
-  padding: 10px;
-  font-size: 20px;
+  padding: 0.6rem;
+  font-size: 1.25rem;
   font-family: Hind Guntur;
   border: 2px solid #ccc;
   border-radius: 8px;
   transition-duration: 0.4s;
+  line-height: 1.3;
 }
 
 button:hover {
@@ -76,7 +83,7 @@ button:hover {
 
 .popup {
   display: flex;
-  gap: 10px;
+  gap: 0.6rem;
   justify-content: center;
   flex-direction: column;
 }
