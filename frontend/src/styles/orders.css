@@ -1,0 +1,266 @@
+#orders {
+    width: 100%;
+    margin: 0;
+}
+
+.saleUI {
+    background-color: var(--redPrimary);
+    padding: 2%;
+    display: flex;
+    justify-content: space-around;
+}
+
+.selectionitem {
+    width: 50%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column; 
+    justify-content: flex-start;
+}
+
+.selectionitem h2 {
+    margin: 10px 0px;
+}
+
+.selectionitem h3 {
+    padding: 20px;
+}
+
+.selectionitembuttons {
+    display: flex;
+    /*justify-content: center;*/
+    flex-wrap: wrap;
+}
+
+.selectionitembuttons button {
+    padding: 20px;
+    font-size: 24px;
+    background-color: #Ffffff;
+    border-radius: 0;
+    border: 0;
+    border: 1px solid #ccc;
+    line-height: 24px;
+}
+
+.selectionitembuttons button:hover {
+    background-color: var(--blackText);
+    border: 1px solid #ccc;
+}
+
+.selectionitembuttons .selected {
+    background-color: var(--blackText);
+    border: 1px solid #ccc;
+}
+
+.cart {
+    width: 50%;
+    background-color: var(--bgBeige);
+    border-radius: 20px;
+    background-color: rgb(250, 246, 215);
+    font-size: 24px;
+    padding: 15px;
+}
+
+.cart h2 {
+    margin: 0;
+}
+
+.cart button {
+    margin: 5px;
+    font-size: 24px;
+    background-color: var(--navySecondary);
+    color: #ffffff;
+    border: 2px solid var(--navySecondary);
+}
+
+.cart button:hover {
+    background-color: #ffffff;
+    color: var(--navySecondary);
+    border: 2px solid var(--navySecondary);
+}
+
+.cart .selected {
+    background-color: #ffffff;
+    color: var(--blackText);
+}
+
+.cartitems {
+    margin-bottom: 20px;
+    border-radius: 20px;
+    border: 2px solid #d1ceb4;
+}
+
+.cartitems p {
+    margin: 0;   
+}
+
+.cartitems h3 {
+    padding: 0 16px 16px 16px;
+}
+
+.cartitems ul {
+    margin: 0 16px 16px 16px;
+}
+
+.cartitems li {
+    padding-bottom: 16px;
+}
+
+.cartbuttons {
+    padding: 0 16px 16px 11px;
+}
+
+.payment {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.payment > * {
+    flex: 1; 
+}
+
+.popupSection {
+    border-top: 3px solid var(--bgBeige);
+    padding-bottom: 10px;
+}
+
+.popupSection .selected{
+    background-color: var(--navySecondary);
+    border: 2px solid #ccc;
+}
+
+.popupSection:empty {
+  display: none;
+}
+
+.orderpopup h2,
+.orderpopup h3 {
+    color: #e6d2d2;
+}
+
+.orderpopup h3 {
+    padding: 12px 4px;
+}
+
+.orderpopup button {
+    margin: 5px;
+    font-size: 24px;
+}
+
+.checkout {
+    padding: 30px 0;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.checkout button{
+    background-color: var(--yellowAccent);
+    color: var(--blackText);
+    border: 2px solid var(--yellowAccent);
+    padding: 10px;
+    font-size: 24px;
+    border-radius: 8px;
+    transition-duration: 0.4s;
+}
+
+.checkout button:hover{
+    background-color: var(--blackText);
+    color: var(--yellowAccent);
+    border: 2px solid var(--yellowAccent);
+    cursor: pointer;
+}
+
+.orderlogs {
+    display: flex;
+}
+
+.completedOrders {
+    margin: 0 5%;
+}
+
+.order {
+    padding: 20px;
+    margin: 20px;
+    background-color: #2f3269;
+    color:#ffffff;
+    border-radius: 20px;
+}
+
+.order p {
+    color:#ffffff;
+    margin-bottom: 0;
+}
+
+.order ul {
+    gap: 0px 10px;
+    /* box-shadow: 4px 4px 10px 0px rgba(0, 0, 0, 0.1); */
+    background-color: #353a78;
+    border-radius: 20px;
+    margin: 0;
+    padding: 2% 0 20px 2%;
+}
+
+.order li {
+    font-size: 20px;
+    padding: 10px 20px 10px 10px;
+}
+
+.orderheader {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.orderheader h3 {
+    margin-right: auto;
+}
+
+.deleteorderbutton:hover {
+    background-color: #8a0708;
+}
+
+.order .orderdate {
+    margin: 0; 
+    font-size: 20px;
+    color: #cccccc;
+}
+
+.receiptfooter {
+    position: relative;
+    margin-left: auto;
+    padding: 0 24px;
+}
+
+.receiptfooter p {
+    margin-top: 0;
+}
+
+.orderbody {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+/* Search Bar */
+
+.ordersearchbar {
+    background-color: #353a78;
+}
+
+/* Order Adjustment Popup */
+
+.adjustmentMenu label {
+    font-size: 24px;
+    margin: 0;
+    padding: 0;
+}
+
+.adjustmentMenu input {
+    font-size: 24px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #ffffff;
+    margin: 8px 8px 8px 0;
+}

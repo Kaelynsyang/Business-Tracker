@@ -1,0 +1,56 @@
+#homepage {
+    width: 100%;
+    margin: 0;
+}
+
+.dashboard {
+    padding: 0 2%;
+}
+
+.topStatsRow {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 24px;
+}
+
+.topStatsCard {
+    padding: 24px;
+    background-color: #f9f1e6;
+    box-shadow: 4px 4px 10px 0px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    border-radius: 20px;
+    border: 0.5px solid #aaaaaa;
+    min-width: 0;
+}
+
+.topStatsCard p {
+    margin-bottom: 0;
+}
+
+.generalStats {
+    padding: 24px;
+    margin: 24px 0;
+    background-color: #f9f1e6;
+    box-shadow: 4px 4px 10px 0px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    border: 0.5px solid #aaaaaa;
+    min-width: 0;
+}
+
+.generalStats p {
+    margin: 0;
+}
+
+.detailsSection {
+    padding: 0 2% 24px 2%;
+}
+
+.detailSelection {
+    
+}
+
+/* Export/Import */
+
+.exportImport {
+    padding: 0 2% 24px 2%;
+}

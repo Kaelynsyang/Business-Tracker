@@ -1,0 +1,38 @@
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  border-bottom: 2px solid #8a0708;
+}
+
+nav ul {
+  display: flex;
+  width: 100%;
+  list-style: none;
+  overflow: hidden;
+  padding: 0 40px;
+}
+
+nav li a {
+  display: block;
+  color: black;
+  font-size: 28px;
+  padding: 14px 16px;
+  text-decoration: none;
+  border-radius: 0.5rem;
+}
+
+nav li a:hover {
+  background-color: var(--redPrimary);
+  color: var(--bgBeige);
+}
+
+ul {
+  list-style-type: none;
+  overflow: hidden;
+}
+
+.documentation {
+    margin-left: auto;
+}

@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Hind+Guntur:wght@300;400;500;600;700&family=Laila:wght@300;400;500;600;700&family=Oswald:wght@200..700&display=swap');
+
+* {
+  font-family:Laila, Oswald, Hind Guntur;
+  box-sizing: border-box;
+}
+
+:root{
+  --blackText: #050315;
+  --bgBeige: #f6e8c5;
+  --redPrimary: #8a0708;
+  --navySecondary: #2f3269;
+  --yellowAccent: #e0bb58;
+
+  background-color: var(--bgBeige);
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+	height: 100%;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+}
+
+p {
+  color: var(--blackText);
+  padding: 0px;
+  font-family: Hind Guntur;
+  font-size: 24px;
+}
+
+h1 {
+  font-family: Laila;
+  text-align: center;
+  font-size: 60px;
+  padding: 20px;
+  margin: 0;
+}
+
+h2 {
+  text-align: center;
+  font-size: 40px;
+  padding: 20px;
+  font-family: Oswald;
+}
+
+h3 {
+  font-size: 36px;
+  font-family: Oswald;
+  margin: 0 0;
+}
+
+.selected {
+  background-color: green;
+  color: white;
+}
+
+button {
+  padding: 10px;
+  font-size: 20px;
+  font-family: Hind Guntur;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  transition-duration: 0.4s;
+}
+
+button:hover {
+  background-color: #2f3269;
+  color: white;
+}
+
+.popup {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-direction: column;
+}
