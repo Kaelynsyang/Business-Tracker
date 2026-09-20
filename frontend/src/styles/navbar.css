@@ -1,0 +1,59 @@
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  border-bottom: 2px solid #8a0708;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+  overflow: hidden;
+  padding: 0 2.5rem;
+}
+
+nav li a {
+  display: block;
+  color: black;
+  font-size: 1.75rem;
+  padding: 0.9rem 1rem;
+  text-decoration: none;
+  border-radius: 0.5rem;
+}
+
+nav li a:hover {
+  background-color: var(--redPrimary);
+  color: var(--bgBeige);
+}
+
+ul {
+  list-style-type: none;
+  overflow: hidden;
+}
+
+.documentation {
+  margin-left: auto;
+}
+
+.menu-toggle {
+  display: none; /* Hide toggle button on desktop */
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 780px) {
+  .menu-toggle {
+    display: block; /* Show hamburger/toggle button on mobile */
+  }
+
+  nav ul {
+    padding: 0;
+  }
+
+  nav ul.active {
+    display: flex;
+  }
+}
