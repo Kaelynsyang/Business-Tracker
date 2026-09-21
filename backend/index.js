@@ -199,6 +199,8 @@ app.get("/homepage", async (req, res) => {
     const salesByFandom = {};
     const totalSalesByFandom = {};
     let eventRevenue = 0;
+    let eventRevenueCash = 0;
+    let eventRevenueCard = 0;
 
     let totalItemSoldCount = 0;
     
@@ -261,6 +263,14 @@ app.get("/homepage", async (req, res) => {
     
     for (const order of eventOrders) {
         eventRevenue += order.total;
+
+        if (order.paymentMethod === "Cash") {
+            eventRevenueCash += order.total
+        }
+
+        if (order.paymentMethod === "Card") {
+            eventRevenueCard += order.total
+        }
 
         for (const item of order.items){
             const key = `${item.product}-${item.option.design}-${item.option.size}`;
@@ -349,6 +359,8 @@ app.get("/homepage", async (req, res) => {
         hashMapTotalSold,
         eventResults,
         eventRevenue,
+        eventRevenueCash,
+        eventRevenueCard,
         fandoms,
         fandomResults,
         totalSalesByFandom,
@@ -445,6 +457,7 @@ const printDesigns = [
                 { value: "silver rabbit", sizes: ["small"], dependsOn: { fandom: "Twisted Wonderland"}},
                 { value: "ace new year", sizes: ["small"], dependsOn: { fandom: "Twisted Wonderland"}},
                 { value: "Rowance Riddle", sizes: ["small"], dependsOn: { fandom: "Twisted Wonderland"}},
+                { value: "malleus glorious masquerade", sizes: ["small"], dependsOn: { fandom: "Twisted Wonderland"}},
                 { value: "dorm idia", sizes: ["small", "large"], dependsOn: { fandom: "Twisted Wonderland"}},
                 { value: "teto", sizes: ["large"],  dependsOn: { fandom: "Vocaloid"}},
                 { value: "summer outfit miku", sizes: ["small"],  dependsOn: { fandom: "Vocaloid"}}]
@@ -587,9 +600,14 @@ const foilPinsInventory = foilPinsDesigns.map(design => ({
 }))
 
 const standeeDesigns = [
-                {value: "Canto 7: The Dream Ending", dependsOn: { fandom: "Limbus Company"}},
-                {value: "Canto 4: The Unchanging", dependsOn: { fandom: "Limbus Company"}},
-                {value: "Canto 9: The Unsevering", dependsOn: { fandom: "Limbus Company"}},
+                {value: "Canto 3: The Unconfronting - Sinclair", dependsOn: { fandom: "Limbus Company"}},
+                {value: "Canto 4: The Unchanging - yisang", dependsOn: { fandom: "Limbus Company"}},
+                {value: "Canto 5: The Evil Defining - Ishmael", dependsOn: { fandom: "Limbus Company"}},
+                {value: "Canto 6: The Heartbreaking - Heathcliff", dependsOn: { fandom: "Limbus Company"}},
+                {value: "Canto 7: The Dream Ending - don", dependsOn: { fandom: "Limbus Company"}},
+                {value: "Canto 8: The Surrendered Witnessing - Honglu", dependsOn: { fandom: "Limbus Company"}},
+                {value: "Canto 9: The Unsevering - ryoshu", dependsOn: { fandom: "Limbus Company"}},
+                {value: "Canto 10: The Gaze Bearing - Meursault", dependsOn: { fandom: "Limbus Company"}},
                 {value: "Riddle cup", dependsOn: { fandom: "Twisted Wonderland"}}
             ]
 
@@ -986,7 +1004,7 @@ app.get("/export-orders", async (req, res) => {
         order.items.forEach(item => {
             const deals = (order.deals || []).map(deal => `${deal.name} ($${deal.discount} off)`).join(" | ");
             csv +=
-                `${(order.createdAt).toLocaleString()},` +
+                `${new Date(order.createdAt).toLocaleString()},` +
                 `${order.event || ""},` +
                 `${item.option.design},` +
                 `${item.option.size || ""},` +

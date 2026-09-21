@@ -204,6 +204,8 @@ function Homepage(){
                         {selectedEvent && (
                         <div className="detailDashboard">
                         <h4>Event Revenue: ${stats.eventRevenue}</h4>
+                        <h4>Cash: ${stats.eventRevenueCash}</h4>
+                        <h4>Card: ${stats.eventRevenueCard}</h4>
                             <h4>Product Statistics</h4>
                             <h4 style={{"fontWeight": "400"}}>Units Sold | Profit</h4>
                             <div className="unitsSold">
